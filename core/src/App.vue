@@ -5,7 +5,7 @@
         Toggle nav menu
       </button>
 
-      <h1 class="header__title">App Shell</h1>
+      <h1 class="header__title">Nas Music Player</h1>
     </header>
     <main class="main js-global-main" aria-role="main">
       <router-view/>
@@ -23,7 +23,7 @@
     <section class="side-nav js-side-nav">
       <div class="side-nav__content js-side-nav-content">
         <div class="side-nav__header">
-          <h1 class="side-nav__title">App shell</h1>
+          <h1 class="side-nav__title">Nas Music Player</h1>
         </div>
 
         <div class="side-nav__body">

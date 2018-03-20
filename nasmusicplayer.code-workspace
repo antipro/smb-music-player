@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "core"
+		},
+		{
+			"path": "android"
+		}
+	],
+	"settings": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true,
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/platforms": true,
+			"**/plugins": true,
+			"core/dist": true,
+			"android/www": true
+		}
+	}
+}
