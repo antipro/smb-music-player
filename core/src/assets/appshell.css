@@ -64,7 +64,7 @@ body {
   -webkit-align-content: stretch;
   -ms-flex-line-pack: stretch;
   align-content: stretch;
-  background: #ececec
+  background: #ececec;
 }
 
 body:after {
@@ -76,6 +76,16 @@ body:after {
   opacity: 0;
   will-change: -webkit-opacity;
   transition: -webkit-opacity 333ms cubic-bezier(0, 0, .21, 1) .4s
+}
+
+#app {
+  flex: 1;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 
 h1,
@@ -305,7 +315,7 @@ button::-moz-focus-inner {
 }
 
 .side-nav__header {
-  background: url(images/side-nav-bg@2x.jpg) #3F51B5;
+  background: url(images/side-nav-bg@2x.png) #d32f2f;
   background-size: cover;
   width: 100%;
   height: 171px;
@@ -386,7 +396,17 @@ button::-moz-focus-inner {
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch
+  -webkit-overflow-scrolling: touch;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.main > div {
+  flex: 1;
 }
 
 .superfail .main {
@@ -394,7 +414,7 @@ button::-moz-focus-inner {
 }
 
 .empty-set-cta {
-  color: #3F51B5;
+  color: #d32f2f;
   font-size: 20px;
   position: fixed;
   left: 0;
@@ -452,7 +472,7 @@ button::-moz-focus-inner {
   width: 100%;
   height: 56px;
   color: #FFF;
-  background: #3F51B5;
+  background: #d32f2f;
   font-size: 20px;
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14), 0 2px 9px 1px rgba(0, 0, 0, .12), 0 4px 2px -2px rgba(0, 0, 0, .2);
   padding: 16px 16px 0;

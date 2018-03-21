@@ -1,12 +1,12 @@
 <template>
-  <div class="record">
-    <h2>record</h2>
+  <div class="auth">
+    <h1>Auth</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'record',
+  name: 'auth',
   data () {
     return {}
   }

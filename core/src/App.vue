@@ -27,9 +27,9 @@
         </div>
 
         <div class="side-nav__body">
-          <a role="tab" tabindex="0" class="side-nav__blog-post" href="#">Index</a>
-          <a role="tab" tabindex="0" class="side-nav__blog-post" href="#">URL 1</a>
-          <a role="tab" tabindex="0" class="side-nav__blog-post" href="http://html5test.com/">URL 2</a>
+          <router-link role="tab" tabindex="0" class="side-nav__blog-post" :to="{ name: 'player' }">Player</router-link>
+          <router-link role="tab" tabindex="0" class="side-nav__blog-post" :to="{ name: 'library' }">Library</router-link>
+          <router-link role="tab" tabindex="0" class="side-nav__blog-post" :to="{ name: 'about' }">About</router-link>
         </div>
 
         <div class="side-nav__version">Version @VERSION@</div>
@@ -40,6 +40,7 @@
   </div>
 </template>
 <style src="./assets/appshell.css"></style>
+
 <script>
 const $ = (selector) => {
   return document.querySelector(selector)
