@@ -60,8 +60,8 @@ exports.cssLoaders = function (options) {
     css: generateLoaders(),
     postcss: generateLoaders(),
     less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
+    sass: generateLoaders('sass', { indentedSyntax: true, includePaths: [ path.resolve(__dirname, '../node_modules') ] }),
+    scss: generateLoaders('sass', { includePaths: [ path.resolve(__dirname, '../node_modules') ] }),
     stylus: generateLoaders('stylus'),
     styl: generateLoaders('stylus')
   }

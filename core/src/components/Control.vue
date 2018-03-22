@@ -1,14 +1,20 @@
 <template>
   <div class="control">
-    <span class="btn btn-previous" role="button">
-      <i class="material-icons">&#xE045;</i>
-    </span>
-    <span class="btn btn-play">
-      <i class="material-icons">&#xE037;</i>
-    </span>
-    <span class="btn btn-next">
-      <i class="material-icons">&#xE044;</i>
-    </span>
+    <button class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Previous">
+      <span class="mdc-fab__icon">
+        skip_previous
+      </span>
+    </button>
+    <button class="mdc-fab material-icons" aria-label="Play Arrow">
+      <span class="mdc-fab__icon play_icon">
+        play_arrow
+      </span>
+    </button>
+    <button class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Next">
+      <span class="mdc-fab__icon">
+        skip_next
+      </span>
+    </button>
     <div class="progress-bar">
       <div class="progress" style="width: 0%;"></div>
     </div>
@@ -22,35 +28,11 @@
   align-items: center;
   background-color: #ff6659;
 }
-.control .btn {
-  display: inline-block;
-  background: #338a3e;
-  border-radius: 50%;
-  color: #383636;
-  margin: 4px 3px;
+.control .mdc-fab {
+  margin: 15px 3px;
 }
-.control .btn:active {
-  background-color: #a9b4b6;
-  transform: scale(1.2, 1.2);
-}
-.control .btn .material-icons {
-  color: #000;
-}
-.control .btn-play {
-  width: 48px;
-  height: 48px;
-}
-.control .btn-play .material-icons {
-  font-size: 36px;
-  margin: 6px;
-}
-.control .btn-previous, .btn-next {
-  width: 36px;
-  height: 36px;
-}
-.control .btn-previous .material-icons, .btn-next .material-icons {
-  font-size: 24px;
-  margin: 6px;
+.control .mdc-fab .play_icon {
+  font-size: 48px;
 }
 .control .progress-bar {
   flex-grow: 1;
@@ -67,10 +49,23 @@
 </style>
 
 <script>
+import { MDCRipple } from '@material/ripple'
+
+const $$ = (selector) => {
+  return document.querySelectorAll(selector)
+}
 export default {
   name: 'control',
   data () {
     return {}
+  },
+  mounted () {
+    $$('.mdc-fab').forEach(ele => {
+      MDCRipple.attachTo(ele)
+      ele.addEventListener('click', function () {
+        console.log(this.textContent)
+      })
+    })
   }
 }
 </script>

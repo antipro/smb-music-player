@@ -710,6 +710,7 @@ body:after {
   transition: -webkit-opacity .2s, -webkit-transform .3s cubic-bezier(.165, .84, .44, 1), -webkit-transform .3s cubic-bezier(.165, .84, .44, 1);
   white-space: nowrap;
   opacity: 0;
+  display: none;
   -webkit-transform: translateY(20px);
   transform: translateY(20px);
   left: 16px;
@@ -722,6 +723,7 @@ body:after {
 
 .toast-view--visible {
   opacity: 1;
+  display: block;
   -webkit-transform: translateY(0);
   transform: translateY(0)
 }
