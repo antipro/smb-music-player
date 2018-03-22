@@ -68,10 +68,9 @@ export default {
       transform: 'translateX(-102%)'
     }
   },
-  mounted () {
+  created () {
     mdcAutoInit.deregister('MDCRipple')
     mdcAutoInit.register('MDCRipple', MDCRipple)
-    mdcAutoInit()
   },
   methods: {
     showMenu () {

@@ -41,6 +41,7 @@
 <script>
 import Control from '../components/Control'
 import Search from '../components/Search'
+import mdcAutoInit from '@material/auto-init'
 
 export default {
   name: 'player',
@@ -51,6 +52,9 @@ export default {
   },
   created () {
     this.$parent.title = 'Player'
+  },
+  mounted () {
+    mdcAutoInit()
   },
   methods: {
     toggleMic () {

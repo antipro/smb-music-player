@@ -24,7 +24,7 @@
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Microphone"
       data-mdc-auto-init="MDCRipple"
-      @click="addDirectory">
+      @click="showAuth">
       <span class="mdc-fab__icon">add</span>
     </button>
   </div>
@@ -72,6 +72,9 @@ export default {
   methods: {
     open (url) {
       window.cordova.InAppBrowser.open(url, '_blank', 'location=yes')
+    },
+    showAuth () {
+      console.log('auth')
     }
   }
 }
