@@ -9,6 +9,9 @@ export default {
   name: 'about',
   data () {
     return {}
+  },
+  created () {
+    this.$parent.title = 'About'
   }
 }
 </script>

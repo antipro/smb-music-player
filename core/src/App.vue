@@ -5,7 +5,7 @@
         Toggle nav menu
       </button>
 
-      <h1 class='header__title'>Nas Music Player</h1>
+      <h1 class='header__title'>{{ title }}</h1>
     </header>
     <main class='main js-global-main' aria-role='main'>
       <router-view/>
@@ -41,6 +41,7 @@
 @import "@material/button/mdc-button";
 @import "@material/fab/mdc-fab";
 @import "@material/list/mdc-list";
+@import "@material/textfield/mdc-text-field";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;
@@ -62,6 +63,7 @@ export default {
   name: 'App',
   data () {
     return {
+      title: '',
       menuVisible: false,
       transform: 'translateX(-102%)'
     }

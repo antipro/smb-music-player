@@ -49,7 +49,8 @@ export default {
       listening: false
     }
   },
-  mounted () {
+  created () {
+    this.$parent.title = 'Player'
   },
   methods: {
     toggleMic () {
