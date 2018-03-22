@@ -16,6 +16,7 @@
 			"**/plugins": true,
 			"core/dist": true,
 			"android/www": true
-		}
+		},
+		"git.ignoreLimitWarning": true
 	}
 }

@@ -1,4 +1,8 @@
 node_modules/
-platforms/
 plugins/
 www
+
+# android
+platforms/android/.gradle/
+platforms/android/app/build/
+platforms/android/CordovaLib/build/
