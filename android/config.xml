@@ -15,7 +15,6 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="android-minSdkVersion" value="19" />
-        <preference name="android:windowSoftInputMode" value="adjustPan" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
