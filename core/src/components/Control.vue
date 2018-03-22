@@ -1,12 +1,22 @@
 <template>
   <div class="control">
-    <button id="previous_btn" class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Previous">
+    <button
+      class="mdc-fab mdc-fab--mini material-icons"
+      aria-label="Skip Previous"
+      @click="previous">
       <span class="mdc-fab__icon">skip_previous</span>
     </button>
-    <button id="play_btn" class="mdc-fab material-icons" aria-label="Play Or Pause">
-      <span class="mdc-fab__icon">play_arrow</span>
+    <button
+      class="mdc-fab material-icons play-btn"
+      aria-label="Play Or Pause"
+      @click="togglePlay">
+      <span v-if="playing" class="mdc-fab__icon">pause</span>
+      <span v-else class="mdc-fab__icon">play_arrow</span>
     </button>
-    <button id="next_btn" class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Next">
+    <button
+      class="mdc-fab mdc-fab--mini material-icons"
+      aria-label="Skip Next"
+      @click="next">
       <span class="mdc-fab__icon">skip_next</span>
     </button>
     <div class="progress-bar">
@@ -26,7 +36,7 @@
 .control .mdc-fab {
   margin: 15px 3px;
 }
-.control #play_btn {
+.control .play-btn {
   font-size: 48px;
 }
 .control .progress-bar {
@@ -50,24 +60,25 @@
 </style>
 
 <script>
-const $ = (selector) => {
-  return document.querySelector(selector)
-}
 export default {
   name: 'control',
   data () {
-    return {}
+    return {
+      playing: false
+    }
   },
   mounted () {
-    $('#play_btn').addEventListener('click', function () {
-      let text = $('#play_btn .mdc-fab__icon').textContent
-      console.log(text)
-      if (text === 'play_arrow') {
-        $('#play_btn .mdc-fab__icon').textContent = 'pause'
-      } else {
-        $('#play_btn .mdc-fab__icon').textContent = 'play_arrow'
-      }
-    })
+  },
+  methods: {
+    togglePlay () {
+      this.playing = !this.playing
+    },
+    previous () {
+      console.log('Previous')
+    },
+    next () {
+      console.log('Next')
+    }
   }
 }
 </script>

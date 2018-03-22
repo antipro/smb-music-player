@@ -1,7 +1,7 @@
 <template>
   <div id='app'>
     <header class='header'>
-      <button role='tab' class='header__menu js-toggle-menu'>
+      <button role='tab' class='header__menu' @click="showMenu">
         Toggle nav menu
       </button>
 
@@ -18,8 +18,8 @@
       </svg>
     </div>
 
-    <section class='side-nav js-side-nav'>
-      <div class='side-nav__content js-side-nav-content'>
+    <section class='side-nav' @click="hideMenu" :class="{ 'side-nav--visible': menuVisible }">
+      <div class='side-nav__content js-side-nav-content' :style="{ 'transform': transform }">
         <div class='side-nav__header'>
           <h1 class='side-nav__title'>Nas Music Player</h1>
         </div>
@@ -41,9 +41,7 @@
 @import "@material/button/mdc-button";
 @import "@material/fab/mdc-fab";
 @import "@material/list/mdc-list";
-</style>
 
-<style lang="scss">
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;
 $mdc-theme-primary-dark: #9a0007;
@@ -59,24 +57,29 @@ $mdc-theme-background: #ffffff;
 <script>
 import { MDCRipple } from '@material/ripple'
 import mdcAutoInit from '@material/auto-init'
-const $ = (selector) => {
-  return document.querySelector(selector)
-}
 
 export default {
   name: 'App',
+  data () {
+    return {
+      menuVisible: false,
+      transform: 'translateX(-102%)'
+    }
+  },
   mounted () {
     mdcAutoInit.deregister('MDCRipple')
     mdcAutoInit.register('MDCRipple', MDCRipple)
     mdcAutoInit()
-    $('.js-toggle-menu').addEventListener('click', function (evt) {
-      $('.js-side-nav').classList.add('side-nav--visible')
-      $('.js-side-nav-content').style['-webkit-transform'] = 'translateX(0px)'
-    })
-    $('.js-side-nav').addEventListener('click', function (evt) {
-      $('.js-side-nav').classList.remove('side-nav--visible')
-      $('.js-side-nav-content').style['-webkit-transform'] = 'translateX(-102%)'
-    })
+  },
+  methods: {
+    showMenu () {
+      this.menuVisible = true
+      this.transform = 'translateX(0px)'
+    },
+    hideMenu () {
+      this.menuVisible = false
+      this.transform = 'translateX(-102%)'
+    }
   }
 }
 </script>

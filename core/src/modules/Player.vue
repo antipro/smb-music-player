@@ -2,10 +2,13 @@
   <div class="player">
     <search></search>
     <control></control>
-    <button class="mdc-fab material-icons app-fab--absolute" aria-label="Microphone" data-mdc-auto-init="MDCRipple">
-      <span class="mdc-fab__icon">
-        mic
-      </span>
+    <button
+      class="mdc-fab material-icons app-fab--absolute"
+      aria-label="Microphone"
+      data-mdc-auto-init="MDCRipple"
+      @click="toggleMic">
+      <span v-if="listening" class="mdc-fab__icon">mic_off</span>
+      <span v-else class="mdc-fab__icon">mic</span>
     </button>
   </div>
 </template>
@@ -42,7 +45,16 @@ import Search from '../components/Search'
 export default {
   name: 'player',
   data () {
-    return {}
+    return {
+      listening: false
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    toggleMic () {
+      this.listening = !this.listening
+    }
   },
   components: {
     Control, Search
