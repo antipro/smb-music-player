@@ -23,14 +23,12 @@
         <div class='side-nav__header'>
           <h1 class='side-nav__title'>Nas Music Player</h1>
         </div>
-
         <div class='side-nav__body'>
           <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'player' }">Player</router-link>
           <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'library' }">Library</router-link>
           <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'about' }">About</router-link>
         </div>
 
-        <div class='side-nav__version'>Version @VERSION@</div>
       </div>
     </section>
 
@@ -59,6 +57,8 @@ $mdc-theme-background: #ffffff;
 </style>
 
 <script>
+import { MDCRipple } from '@material/ripple'
+import mdcAutoInit from '@material/auto-init'
 const $ = (selector) => {
   return document.querySelector(selector)
 }
@@ -66,6 +66,9 @@ const $ = (selector) => {
 export default {
   name: 'App',
   mounted () {
+    mdcAutoInit.deregister('MDCRipple')
+    mdcAutoInit.register('MDCRipple', MDCRipple)
+    mdcAutoInit()
     $('.js-toggle-menu').addEventListener('click', function (evt) {
       $('.js-side-nav').classList.add('side-nav--visible')
       $('.js-side-nav-content').style['-webkit-transform'] = 'translateX(0px)'

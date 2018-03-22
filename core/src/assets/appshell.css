@@ -323,7 +323,7 @@ button::-moz-focus-inner {
 }
 
 .side-nav__title {
-  font-size: 16px;
+  font-size: 24px;
   line-height: 1;
   color: #FFF;
   position: absolute;
@@ -335,14 +335,6 @@ button::-moz-focus-inner {
 
 .side-nav__body {
   padding-top: 8px
-}
-
-.side-nav__version {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  font-size: 14px;
-  opacity: .54
 }
 
 .side-nav__blog-post,

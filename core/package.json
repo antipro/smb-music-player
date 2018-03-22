@@ -14,6 +14,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@material/auto-init": "^0.32.0",
     "@material/button": "^0.33.0",
     "@material/fab": "^0.33.0",
     "@material/list": "^0.33.0",

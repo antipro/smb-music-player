@@ -2,6 +2,11 @@
   <div class="player">
     <search></search>
     <control></control>
+    <button class="mdc-fab material-icons app-fab--absolute" aria-label="Microphone" data-mdc-auto-init="MDCRipple">
+      <span class="mdc-fab__icon">
+        mic
+      </span>
+    </button>
   </div>
 </template>
 
@@ -15,6 +20,19 @@
   flex-direction: column;
 }
 .player .search { flex: 1; }
+
+.player .app-fab--absolute {
+  position: fixed;
+  bottom: 100px;
+  right: 1rem;
+}
+
+@media(min-width: 1024px) {
+   .player .app-fab--absolute {
+    bottom: 150px;
+    right: 1.5rem;
+  }
+}
 </style>
 
 <script>

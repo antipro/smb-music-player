@@ -1,22 +1,17 @@
 <template>
   <div class="control">
-    <button class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Previous">
-      <span class="mdc-fab__icon">
-        skip_previous
-      </span>
+    <button id="previous_btn" class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Previous">
+      <span class="mdc-fab__icon">skip_previous</span>
     </button>
-    <button class="mdc-fab material-icons" aria-label="Play Arrow">
-      <span class="mdc-fab__icon play_icon">
-        play_arrow
-      </span>
+    <button id="play_btn" class="mdc-fab material-icons" aria-label="Play Or Pause">
+      <span class="mdc-fab__icon">play_arrow</span>
     </button>
-    <button class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Next">
-      <span class="mdc-fab__icon">
-        skip_next
-      </span>
+    <button id="next_btn" class="mdc-fab mdc-fab--mini material-icons" aria-label="Skip Next">
+      <span class="mdc-fab__icon">skip_next</span>
     </button>
     <div class="progress-bar">
       <div class="progress" style="width: 0%;"></div>
+      <p class="message">Buffering...</p>
     </div>
   </div>
 </template>
@@ -31,7 +26,7 @@
 .control .mdc-fab {
   margin: 15px 3px;
 }
-.control .mdc-fab .play_icon {
+.control #play_btn {
   font-size: 48px;
 }
 .control .progress-bar {
@@ -46,13 +41,17 @@
   border-radius: 2px;
   height: 100%;
 }
+.control .progress-bar .message {
+  width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
+  margin: 5px 0;
+}
 </style>
 
 <script>
-import { MDCRipple } from '@material/ripple'
-
-const $$ = (selector) => {
-  return document.querySelectorAll(selector)
+const $ = (selector) => {
+  return document.querySelector(selector)
 }
 export default {
   name: 'control',
@@ -60,11 +59,14 @@ export default {
     return {}
   },
   mounted () {
-    $$('.mdc-fab').forEach(ele => {
-      MDCRipple.attachTo(ele)
-      ele.addEventListener('click', function () {
-        console.log(this.textContent)
-      })
+    $('#play_btn').addEventListener('click', function () {
+      let text = $('#play_btn .mdc-fab__icon').textContent
+      console.log(text)
+      if (text === 'play_arrow') {
+        $('#play_btn .mdc-fab__icon').textContent = 'pause'
+      } else {
+        $('#play_btn .mdc-fab__icon').textContent = 'play_arrow'
+      }
     })
   }
 }
