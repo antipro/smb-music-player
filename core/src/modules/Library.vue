@@ -20,13 +20,13 @@
         </span>
       </li>
     </ul>
-    <button
+    <router-link
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Microphone"
       data-mdc-auto-init="MDCRipple"
-      @click="showAuth">
+      :to="{ name: 'auth' }">
       <span class="mdc-fab__icon">add</span>
-    </button>
+    </router-link>
   </div>
 </template>
 
@@ -68,14 +68,6 @@ export default {
   },
   mounted () {
     mdcAutoInit()
-  },
-  methods: {
-    open (url) {
-      window.cordova.InAppBrowser.open(url, '_blank', 'location=yes')
-    },
-    showAuth () {
-      console.log('auth')
-    }
   }
 }
 </script>

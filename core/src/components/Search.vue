@@ -40,6 +40,7 @@
   overflow-y: auto;
 }
 .search .mdc-text-field {
+  margin-top: 0;
   display: block;
 }
 </style>

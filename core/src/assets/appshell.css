@@ -103,7 +103,8 @@ h6 {
 }
 
 a {
-  color: #FF4081
+  color: #FF4081;
+  text-decoration: none;
 }
 
 .is-hidden {

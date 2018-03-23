@@ -41,7 +41,9 @@
 @import "@material/button/mdc-button";
 @import "@material/fab/mdc-fab";
 @import "@material/list/mdc-list";
+@import "@material/form-field/mdc-form-field";
 @import "@material/textfield/mdc-text-field";
+@import "@material/checkbox/mdc-checkbox";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;

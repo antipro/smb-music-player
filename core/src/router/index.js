@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Player from '@/modules/Player'
 import Library from '@/modules/Library'
 import About from '@/modules/About'
+import Auth from '@/modules/Auth'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/library',
       name: 'library',
       component: Library
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: Auth
     },
     {
       path: '/about',
