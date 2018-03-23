@@ -86,7 +86,6 @@ export default {
           return file.directory && !file.name.endsWith('$/')
         })
         this.currentUrl = this.$route.params.url
-        alert(files)
       }, function (err) {
         alert(err)
       })
