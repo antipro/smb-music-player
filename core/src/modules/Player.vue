@@ -53,7 +53,7 @@ export default {
   created () {
     this.$parent.title = 'Player'
   },
-  mounted () {
+  updated () {
     mdcAutoInit()
   },
   methods: {

@@ -112,6 +112,21 @@ export default {
   methods: {
     accept () {
       console.log('accept')
+      if (!this.serverAddress.endsWith('/')) {
+        this.serverAddress += '/'
+      }
+      let url = ''
+      if (this.guest) {
+        url = 'smb://' + this.serverAddress
+      } else {
+        url = 'smb://' + this.userName + ':' + this.password + '@' + this.serverAddress
+      }
+      this.$router.push({
+        name: 'directory',
+        params: {
+          url
+        }
+      })
     }
   },
   computed: {

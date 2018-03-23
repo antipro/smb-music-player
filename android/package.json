@@ -25,7 +25,8 @@
         "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect",
         "XWALK_MODE": "embedded",
         "XWALK_MULTIPLEAPK": "true"
-      }
+      },
+      "cordova-plugin-cifs": {}
     },
     "platforms": [
       "android"

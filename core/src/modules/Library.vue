@@ -66,7 +66,7 @@ export default {
   created () {
     this.$parent.title = 'Library'
   },
-  mounted () {
+  updated () {
     mdcAutoInit()
   }
 }

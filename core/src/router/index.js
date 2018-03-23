@@ -4,6 +4,7 @@ import Player from '@/modules/Player'
 import Library from '@/modules/Library'
 import About from '@/modules/About'
 import Auth from '@/modules/Auth'
+import Directory from '@/modules/Directory'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
       path: '/auth',
       name: 'auth',
       component: Auth
+    },
+    {
+      path: '/directory',
+      name: 'directory',
+      component: Directory
     },
     {
       path: '/about',

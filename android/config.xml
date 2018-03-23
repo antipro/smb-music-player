@@ -27,5 +27,6 @@
         <variable name="XWALK_MODE" value="embedded" />
         <variable name="XWALK_MULTIPLEAPK" value="true" />
     </plugin>
+    <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
     <engine name="android" spec="^7.0.0" />
 </widget>

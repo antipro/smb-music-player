@@ -17,6 +17,7 @@
 			"core/dist": true,
 			"android/www": true
 		},
-		"git.ignoreLimitWarning": true
+		"git.ignoreLimitWarning": true,
+		"java.configuration.updateBuildConfiguration": "automatic"
 	}
 }

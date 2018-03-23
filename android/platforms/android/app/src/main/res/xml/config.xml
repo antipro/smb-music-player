@@ -7,6 +7,9 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="Cifs">
+        <param name="android-package" value="org.apache.cordova.cifs.Cifs" />
+    </feature>
     <name>NasMusic</name>
     <description>A nas music player.</description>
     <author email="antipro@163.com" href="http://">Cheng Zhang</author>
