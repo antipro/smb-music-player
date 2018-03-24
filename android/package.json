@@ -28,7 +28,8 @@
         "XWALK_MULTIPLEAPK": "true"
       },
       "cordova-plugin-cifs": {},
-      "cordova-plugin-backbutton": {}
+      "cordova-plugin-backbutton": {},
+      "cordova-plugin-media": {}
     },
     "platforms": [
       "android"

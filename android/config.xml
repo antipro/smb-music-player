@@ -29,5 +29,6 @@
     </plugin>
     <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
     <plugin name="cordova-plugin-backbutton" spec="^0.3.0" />
+    <plugin name="cordova-plugin-media" spec="../../Sharelist/cordova-plugin-media" />
     <engine name="android" spec="^7.0.0" />
 </widget>

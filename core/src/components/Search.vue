@@ -20,7 +20,8 @@
         class="mdc-list-item"
         data-mdc-auto-init="MDCRipple"
         v-for="file in filter(filelist)"
-        :key="file.id">
+        :key="file.id"
+        @click="select(file)">
         <span class="mdc-list-item__graphic" role="presentation">
           <i class="material-icons" aria-hidden="true">audiotrack</i>
         </span>
@@ -57,6 +58,7 @@ export default {
       filelist: []
     }
   },
+  props: ['bus'],
   created () {
     this.showFiles()
   },
@@ -71,6 +73,9 @@ export default {
     },
     async showFiles () {
       this.filelist = await db.files.toArray()
+    },
+    select (file) {
+      this.bus.$emit('select', file.url)
     }
   },
   computed: {
