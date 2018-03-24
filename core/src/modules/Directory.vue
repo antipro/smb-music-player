@@ -154,7 +154,7 @@ export default {
         type: 2,
         lastupdate: null
       })
-      history.go(-2)
+      history.go(-1)
     }
   }
 }

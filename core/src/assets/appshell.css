@@ -339,12 +339,8 @@ button::-moz-focus-inner {
   padding-top: 8px
 }
 
-.side-nav__blog-post,
-.side-nav__delete-all,
-.side-nav__delete-memos,
-.side-nav__file-bug-report {
+.side-nav__body * {
   font-family: Roboto;
-  font-size: 14px;
   outline: 0;
   height: 48px;
   padding-left: 72px;
@@ -352,35 +348,30 @@ button::-moz-focus-inner {
   text-align: left;
   display: block;
   border: none;
-  background: url(images/ic_delete_24px.svg) 16px 12px no-repeat;
+  background: url(images/ic_menu_24px.svg) 16px 12px no-repeat;
   color: rgba(0, 0, 0, .87);
-  cursor: pointer
-}
-
-.side-nav__delete-all {
-  background-image: url(images/ic_restore_24px.svg)
-}
-
-.side-nav__blog-post {
-  background-image: url(images/ic_info_outline_24px.svg);
+  cursor: pointer;
   line-height: 48px;
-  text-decoration: none
+  text-decoration: none;
 }
 
-.side-nav__blog-post:focus {
+.side-nav__body *:focus {
   background-color: #eee;
-  outline: 0
+  outline: 0;
 }
-
-.side-nav__file-bug-report {
-  background-image: url(images/ic_feedback_24px.svg);
-  line-height: 48px;
-  text-decoration: none
-}
-
-.side-nav__blog-post.active {
+.side-nav__body *:active {
   font-weight: 700;
-  background-color: rgba(0, 0, 0, .05)
+  background-color: rgba(0, 0, 0, .05);
+}
+
+.side-nav__player {
+  background-image: url(images/ic_play_circle_filled_black_24px.svg);
+}
+.side-nav__library {
+  background-image: url(images/ic_storage_black_24px.svg);
+}
+.side-nav__about {
+  background-image: url(images/ic_info_black_24px.svg);
 }
 
 .main {
@@ -401,10 +392,6 @@ button::-moz-focus-inner {
 
 .main > div {
   flex: 1;
-}
-
-.superfail .main {
-  background: url(images/superfail.svg) center center no-repeat
 }
 
 .empty-set-cta {

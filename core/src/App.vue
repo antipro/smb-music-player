@@ -24,9 +24,9 @@
           <h1 class='side-nav__title'>Nas Music Player</h1>
         </div>
         <div class='side-nav__body'>
-          <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'player' }">Player</router-link>
-          <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'library' }">Library</router-link>
-          <router-link role='tab' tabindex='0' class='side-nav__blog-post' :to="{ name: 'about' }">About</router-link>
+          <router-link role='tab' tabindex='0' class='side-nav__player' :to="{ name: 'player' }">Player</router-link>
+          <router-link role='tab' tabindex='1' class='side-nav__library' :to="{ name: 'library' }">Library</router-link>
+          <router-link role='tab' tabindex='2' class='side-nav__about' :to="{ name: 'about' }">About</router-link>
         </div>
 
       </div>

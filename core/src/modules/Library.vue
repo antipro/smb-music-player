@@ -22,7 +22,7 @@
             class="mdc-list-item__meta material-icons"
             aria-label="Refresh Directory"
             title="Refresh"
-            @click.stop="refresh(directory.id)">
+            @click.stop="refresh(directory)">
             refresh
           </span>
           <span
@@ -96,8 +96,8 @@ export default {
     this.showDirs()
   },
   methods: {
-    refresh (id) {
-      console.log(id)
+    refresh (directory) {
+      this.updateDir(directory)
     },
     remove (id) {
       db.transaction('rw', db.directories, db.files, async () => {
@@ -139,6 +139,7 @@ export default {
       this.inprogress.push(directory.id)
       db.transaction('rw', db.directories, db.files, async () => {
         await db.files.where('fid').equals(directory.id).delete()
+        directory.files = 0
         let callback = async (url) => {
           window.cifs.dir(url, files => {
             for (const file of files) {

@@ -116,7 +116,7 @@ export default {
       } else {
         url = 'smb://' + this.userName + ':' + this.password + '@' + this.serverAddress
       }
-      this.$router.push({
+      this.$router.replace({
         name: 'directory',
         params: {
           url
