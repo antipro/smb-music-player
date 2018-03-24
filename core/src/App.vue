@@ -32,7 +32,8 @@
       </div>
     </section>
 
-    <aside class='toast-view js-toast-view'>Message</aside>
+    <aside class='toast-view js-toast-view' :class="{ 'toast-view--visible': message }">{{ message }}</aside>
+    <confirm ref="confirmdlg" :title="confirmTitle" @confirm="confirmed"></confirm>
   </div>
 </template>
 <style src='./assets/appshell.css'></style>
@@ -44,6 +45,8 @@
 @import "@material/form-field/mdc-form-field";
 @import "@material/textfield/mdc-text-field";
 @import "@material/checkbox/mdc-checkbox";
+@import "@material/dialog/mdc-dialog";
+@import "@material/linear-progress/mdc-linear-progress";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;
@@ -60,19 +63,48 @@ $mdc-theme-background: #ffffff;
 <script>
 import { MDCRipple } from '@material/ripple'
 import mdcAutoInit from '@material/auto-init'
+import Confirm from '@/components/Confirm'
 
+let resp = () => {
+  console.log('Nothing.')
+}
 export default {
   name: 'App',
   data () {
     return {
       title: '',
       menuVisible: false,
-      transform: 'translateX(-102%)'
+      transform: 'translateX(-102%)',
+      message: '',
+      confirmTitle: ''
     }
   },
   created () {
     mdcAutoInit.deregister('MDCRipple')
     mdcAutoInit.register('MDCRipple', MDCRipple)
+  },
+  mounted () {
+    document.addEventListener('deviceready', () => {
+      document.addEventListener('backbutton', evt => {
+        if (location.href.indexOf('directory') > -1) {
+          this.confirmTitle = 'Exit without save?'
+          resp = (bool) => {
+            this.confirmTitle = ''
+            if (bool) {
+              history.back()
+            }
+          }
+        } else if (location.href.endsWith('#/')) {
+          navigator.Backbutton.goHome(function () {
+            console.log('go home success')
+          }, function () {
+            console.log('go home fail')
+          })
+        } else {
+          history.back()
+        }
+      }, false)
+    }, false)
   },
   methods: {
     showMenu () {
@@ -82,7 +114,19 @@ export default {
     hideMenu () {
       this.menuVisible = false
       this.transform = 'translateX(-102%)'
+    },
+    showMsg (message) {
+      this.message = message
+      setTimeout(() => {
+        this.message = ''
+      }, 3000)
+    },
+    confirmed (bool) {
+      resp(bool)
     }
+  },
+  components: {
+    Confirm
   }
 }
 </script>

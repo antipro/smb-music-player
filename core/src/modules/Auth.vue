@@ -88,8 +88,6 @@
 </style>
 
 <script>
-import mdcAutoInit from '@material/auto-init'
-
 export default {
   name: 'auth',
   data () {
@@ -105,9 +103,6 @@ export default {
   },
   created () {
     this.$parent.title = 'Auth'
-  },
-  mounted () {
-    mdcAutoInit()
   },
   methods: {
     accept () {

@@ -19,15 +19,15 @@
       <li
         class="mdc-list-item"
         data-mdc-auto-init="MDCRipple"
-        v-for="song in filter(songlist)"
-        :key="song.name">
+        v-for="file in filter(filelist)"
+        :key="file.id">
         <span class="mdc-list-item__graphic" role="presentation">
           <i class="material-icons" aria-hidden="true">audiotrack</i>
         </span>
         <span class="mdc-list-item__text">
-          {{ song.name }}
+          {{ file.name }}
           <span class="mdc-list-item__secondary-text">
-            Size: {{ song.size }}
+            Length: {{ file.length }}
           </span>
         </span>
       </li>
@@ -46,35 +46,31 @@
 </style>
 
 <script>
+import db from '../database'
+
 export default {
   name: 'search',
   data () {
     return {
       phrase: '',
       focused: false,
-      songlist: [ {
-        name: 'Blue - On Love.mp3',
-        size: 10000,
-        url: ''
-      }, {
-        name: 'Backstreet Boys - Everybody.mp3',
-        size: 10000,
-        url: ''
-      }, {
-        name: 'Kate Perry - Let it go.mp3',
-        size: 10000,
-        url: ''
-      } ]
+      filelist: []
     }
   },
+  created () {
+    this.showFiles()
+  },
   methods: {
-    filter (songlist) {
+    filter (filelist) {
       if (this.phrase === '') {
-        return songlist
+        return filelist
       }
-      return songlist.filter(song => {
-        return song.name.toLowerCase().indexOf(this.phrase.toLowerCase()) > -1
+      return filelist.filter(file => {
+        return file.name.toLowerCase().indexOf(this.phrase.toLowerCase()) > -1
       })
+    },
+    async showFiles () {
+      this.filelist = await db.files.toArray()
     }
   },
   computed: {

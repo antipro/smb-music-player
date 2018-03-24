@@ -3,19 +3,17 @@
     <ul class="mdc-list mdc-list--two-line">
       <li
         class="mdc-list-item"
-        data-mdc-auto-init="MDCRipple"
         v-if="parentUrlStack.length !== 0"
         @click="rollBack()">
         <span class="mdc-list-item__graphic" role="presentation">
-          <i class="material-icons" aria-hidden="true">folder</i>
+          <i class="material-icons" aria-hidden="true">folder_open</i>
         </span>
         <span class="mdc-list-item__text">
-          ..
+          Parent..
         </span>
       </li>
       <li
         class="mdc-list-item"
-        data-mdc-auto-init="MDCRipple"
         v-for="directory in directorylist"
         :key="directory.url"
         @click="openDir(directory.url)"
@@ -61,7 +59,7 @@
 </style>
 
 <script>
-import mdcAutoInit from '@material/auto-init'
+import db from '../database'
 
 const TOUCHDURATION = 500
 var timer = 0
@@ -86,8 +84,9 @@ export default {
           return file.directory && !file.name.endsWith('$/')
         })
         this.currentUrl = this.$route.params.url
+        this.$parent.showMsg('Select Directory By Long Press')
       }, function (err) {
-        alert(err)
+        this.$parent.showMsg(err)
       })
     } else {
       this.directorylist = [ {
@@ -98,11 +97,8 @@ export default {
         name: 'CloudMusic',
         url: 'smb://192.168.0.144/Music/CloudMusic/',
         directory: true
-      } ]
+      }]
     }
-  },
-  updated () {
-    mdcAutoInit()
   },
   methods: {
     openDir (url) {
@@ -113,8 +109,9 @@ export default {
           return file.directory && !file.name.endsWith('$/')
         })
         this.currentUrl = url
+        document.querySelector('.main').scrollTop = 0
       }, function (err) {
-        alert(err)
+        this.$parent.showMsg(err)
       })
     },
     rollBack () {
@@ -122,13 +119,17 @@ export default {
         return
       }
       this.selectedDirectory = {}
+      let oldUrl = this.currentUrl
       this.currentUrl = this.parentUrlStack.pop()
       window.cifs.dir(this.currentUrl, (files) => {
         this.directorylist = files.filter(file => {
           return file.directory && !file.name.endsWith('$/')
         })
+        document.querySelector('.main').scrollTop = 0
       }, function (err) {
-        alert(err)
+        this.$parent.showMsg(err)
+        this.parentUrlStack.push(this.currentUrl)
+        this.currentUrl = oldUrl
       })
     },
     starttouch (directory) {
@@ -146,7 +147,14 @@ export default {
       if (!this.selectedDirectory.url) {
         return
       }
-      alert('select')
+      db.directories.add({
+        name: this.selectedDirectory.name,
+        url: this.selectedDirectory.url,
+        files: 0,
+        type: 2,
+        lastupdate: null
+      })
+      history.go(-2)
     }
   }
 }

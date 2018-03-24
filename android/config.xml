@@ -28,5 +28,6 @@
         <variable name="XWALK_MULTIPLEAPK" value="true" />
     </plugin>
     <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
+    <plugin name="cordova-plugin-backbutton" spec="^0.3.0" />
     <engine name="android" spec="^7.0.0" />
 </widget>
