@@ -45,10 +45,6 @@
               "count": 1
             },
             {
-              "xml": "<feature name=\"Cifs\"><param name=\"android-package\" value=\"org.apache.cordova.cifs.Cifs\" /></feature>",
-              "count": 1
-            },
-            {
               "xml": "<feature name=\"BackbuttonPlugin\"><param name=\"android-package\" value=\"com.badrit.Backbutton.BackbuttonPlugin\" /></feature>",
               "count": 1
             },
@@ -62,6 +58,10 @@
             },
             {
               "xml": "<feature name=\"Media\"><param name=\"android-package\" value=\"org.apache.cordova.media.AudioHandler\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"Cifs\"><param name=\"android-package\" value=\"org.apache.cordova.cifs.Cifs\" /></feature>",
               "count": 1
             }
           ]
@@ -114,9 +114,6 @@
       "XWALK_MULTIPLEAPK": "true",
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     },
-    "cordova-plugin-cifs": {
-      "PACKAGE_NAME": "io.rowrabbit.nasmusic"
-    },
     "cordova-plugin-backbutton": {
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     },
@@ -124,6 +121,9 @@
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     },
     "cordova-plugin-media": {
+      "PACKAGE_NAME": "io.rowrabbit.nasmusic"
+    },
+    "cordova-plugin-cifs": {
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     }
   },
@@ -136,14 +136,6 @@
       "clobbers": [
         "cordova.InAppBrowser.open",
         "window.open"
-      ]
-    },
-    {
-      "id": "cordova-plugin-cifs.cifs",
-      "file": "plugins/cordova-plugin-cifs/www/cifs.js",
-      "pluginId": "cordova-plugin-cifs",
-      "clobbers": [
-        "cifs"
       ]
     },
     {
@@ -342,15 +334,23 @@
       "clobbers": [
         "window.Media"
       ]
+    },
+    {
+      "id": "cordova-plugin-cifs.cifs",
+      "file": "plugins/cordova-plugin-cifs/www/cifs.js",
+      "pluginId": "cordova-plugin-cifs",
+      "clobbers": [
+        "cifs"
+      ]
     }
   ],
   "plugin_metadata": {
     "cordova-plugin-inappbrowser": "2.0.2",
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-plugin-crosswalk-webview": "2.4.0",
-    "cordova-plugin-cifs": "1.0.0",
     "cordova-plugin-backbutton": "0.3.0",
     "cordova-plugin-file": "6.0.1",
-    "cordova-plugin-media": "5.0.2-dev"
+    "cordova-plugin-media": "5.0.2-dev",
+    "cordova-plugin-cifs": "1.0.0"
   }
 }

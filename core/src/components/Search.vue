@@ -71,8 +71,10 @@ export default {
         return file.name.toLowerCase().indexOf(this.phrase.toLowerCase()) > -1
       })
     },
-    async showFiles () {
-      this.filelist = await db.files.toArray()
+    showFiles () {
+      db.files.limit(100).toArray(filelist => {
+        this.filelist = filelist
+      })
     },
     select (file) {
       this.bus.$emit('select', file.url)
@@ -81,6 +83,19 @@ export default {
   computed: {
     floated () {
       return this.phrase !== '' || this.focused
+    }
+  },
+  watch: {
+    phrase (val) {
+      if (val === '') {
+        this.showFiles()
+        return
+      }
+      this.filelist = []
+      let regex = new RegExp(val, 'i')
+      db.files.filter(file => regex.test(file.name)).limit(100).toArray(filelist => {
+        this.filelist = filelist
+      })
     }
   }
 }

@@ -153,6 +153,8 @@ export default {
         files: 0,
         type: 2,
         lastupdate: null
+      }).then(() => {
+        this.$root.refreshAll()
       })
       history.go(-1)
     }

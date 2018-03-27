@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-whitelist","cordova-plugin-inappbrowser","cordova-plugin-crosswalk-webview","cordova-plugin-cifs","cordova-plugin-backbutton","cordova-plugin-media","cordova-plugin-file"]}
+{"plugins":["cordova-plugin-whitelist","cordova-plugin-inappbrowser","cordova-plugin-crosswalk-webview","cordova-plugin-backbutton","cordova-plugin-media","cordova-plugin-file","cordova-plugin-cifs"]}
