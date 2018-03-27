@@ -20,7 +20,7 @@
       <span class="mdc-fab__icon">skip_next</span>
     </button>
     <div class="progress-bar">
-      <div role="progressbar" class="mdc-linear-progress" @click="seek">
+      <div role="progressbar" class="mdc-linear-progress" @click="seekTo">
         <div class="mdc-linear-progress__buffering-dots"></div>
         <div class="mdc-linear-progress__buffer"></div>
         <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar" :style="{ transform: progress }">
@@ -69,119 +69,49 @@
 </style>
 
 <script>
-var mediaTimer = 0
-var audioPlayer = null
 export default {
   name: 'control',
   data () {
     return {
+      msgbus: null,
       playing: false,
       status: '',
       progress: 'scaleX(0)'
     }
   },
-  props: ['bus'],
   created () {
-    this.bus.$on('select', (file) => {
-      this.play(file)
+    this.msgbus = this.$root.msgbus
+    this.msgbus.$on('toggleplay', (bool) => {
+      this.playing = bool
     })
+    this.msgbus.$on('progress', (progress) => {
+      this.progress = progress
+    })
+    this.msgbus.$on('status', (status) => {
+      this.status = status
+    })
+    if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
+      this.playing = true
+    }
   },
   methods: {
     togglePlay () {
-      if (audioPlayer === null) {
-        return
-      }
       if (this.playing === true) {
-        audioPlayer.pause()
+        this.$root.pause()
       }
       if (this.playing === false) {
-        audioPlayer.play()
+        this.$root.resume()
       }
     },
-    play (url) {
-      if (!window.cifs) {
-        return
-      }
-      if (audioPlayer) {
-        audioPlayer.stop()
-      }
-      this.currentUrl = url
-      window.cifs.download(url, (res) => {
-        if (this.currentUrl !== url) {
-          return
-        }
-        if (res.status === 'downloading') {
-          this.status = `Buffering(${res.percent})...`
-        }
-        if (res.status === 'finished') {
-          this.status = ''
-          audioPlayer = new window.Media(window.cordova.file.cacheDirectory + res.filename, () => {
-            this.playing = false
-          }, mediaError => {
-            console.log(JSON.stringify(mediaError))
-          }, mediaStatus => {
-            this.changeStatus(mediaStatus)
-          })
-          audioPlayer.play()
-        }
-      }, (error) => {
-        this.currentUrl = ''
-        console.log(error)
-      })
+    seekTo (evt) {
+      let percent = evt.offsetX / evt.currentTarget.clientWidth
+      this.$root.seekTo(percent)
     },
     previous () {
-      console.log('Previous')
+      this.$root.previous()
     },
     next () {
-      console.log('Next')
-    },
-    changeStatus (mediaStatus) {
-      switch (mediaStatus) {
-        case window.Media.MEDIA_STARTING:
-          console.log('starting')
-          break
-        case window.Media.MEDIA_RUNNING:
-          console.log('running')
-          this.playing = true
-          mediaTimer = setInterval(() => {
-            audioPlayer.getCurrentPosition(position => {
-              let duration = audioPlayer.getDuration()
-              if (duration === -1) {
-                return
-              }
-              let percent = position / duration
-              this.progress = `scaleX(${percent})`
-              this.status = percent + '%'
-            }, error => {
-              console.log(error)
-            })
-          }, 1000)
-          break
-        case window.Media.MEDIA_PAUSED:
-          console.log('paused')
-          this.playing = false
-          break
-        case window.Media.MEDIA_STOPPED:
-          clearInterval(mediaTimer)
-          this.status = ''
-          this.progress = 'scaleX(0)'
-          this.playing = false
-          console.log('stopped')
-          break
-        default:
-          console.log('None')
-      }
-    },
-    seek (evt) {
-      if (!audioPlayer) {
-        return
-      }
-      let duration = audioPlayer.getDuration()
-      if (duration === -1) {
-        return
-      }
-      var percent = evt.offsetX / evt.currentTarget.clientWidth
-      audioPlayer.seekTo(duration * 1000 * percent)
+      this.$root.next()
     }
   }
 }

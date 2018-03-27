@@ -23,7 +23,8 @@
         :key="file.id"
         @click="select(file)">
         <span class="mdc-list-item__graphic" role="presentation">
-          <i class="material-icons" aria-hidden="true">audiotrack</i>
+          <i v-if="selectedId === file.id" class="material-icons" aria-hidden="true">play_circle_outline</i>
+          <i v-else class="material-icons" aria-hidden="true">audiotrack</i>
         </span>
         <span class="mdc-list-item__text">
           {{ file.name }}
@@ -53,14 +54,48 @@ export default {
   name: 'search',
   data () {
     return {
+      msgbus: null,
       phrase: '',
       focused: false,
-      filelist: []
+      filelist: [],
+      selectedId: 0
     }
   },
-  props: ['bus'],
   created () {
     this.showFiles()
+    this.msgbus = this.$root.msgbus
+    this.msgbus.$on('position', file => {
+      this.selectedId = file.id
+    })
+    this.msgbus.$on('next', () => {
+      let idx = this.filelist.findIndex(file => {
+        return file.id === this.selectedId
+      })
+      if (idx === -1) {
+        return
+      }
+      let file = this.filelist[++idx]
+      if (!file) {
+        return
+      }
+      this.select(file)
+    })
+    this.msgbus.$on('previous', () => {
+      let idx = this.filelist.findIndex(file => {
+        return file.id === this.selectedId
+      })
+      if (idx === -1) {
+        return
+      }
+      let file = this.filelist[--idx]
+      if (!file) {
+        return
+      }
+      this.select(file)
+    })
+    if (this.$root.currentFile) {
+      this.selectedId = this.$root.currentFile.id
+    }
   },
   methods: {
     filter (filelist) {
@@ -77,7 +112,7 @@ export default {
       })
     },
     select (file) {
-      this.bus.$emit('select', file.url)
+      this.$root.play(file)
     }
   },
   computed: {

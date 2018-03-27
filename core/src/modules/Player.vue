@@ -1,7 +1,7 @@
 <template>
   <div class="player">
-    <search :bus="bus"></search>
-    <control :bus="bus"></control>
+    <search></search>
+    <control></control>
     <button
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Microphone"
@@ -42,14 +42,12 @@
 import Control from '../components/Control'
 import Search from '../components/Search'
 import mdcAutoInit from '@material/auto-init'
-import Vue from 'vue'
 
 export default {
   name: 'player',
   data () {
     return {
-      listening: false,
-      bus: new Vue()
+      listening: false
     }
   },
   created () {

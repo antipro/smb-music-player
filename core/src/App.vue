@@ -104,6 +104,16 @@ export default {
           history.back()
         }
       }, false)
+      window.cordova.plugins.WifiManager.onnetworkstatechanged = function (data) {
+        if (data.BSSID !== null && data.wifiInfo !== null && data.networkInfo.state === 'CONNECTED') {
+          console.log('connected:' + data.networkInfo.extraInfo)
+          // check directories reachable
+        }
+        if (data.BSSID === null && data.wifiInfo === null && data.networkInfo.state === 'DISCONNECTED') {
+          console.log('disconnected', data)
+          // all directories unreachable
+        }
+      }
     }, false)
   },
   methods: {

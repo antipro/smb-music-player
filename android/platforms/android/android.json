@@ -63,6 +63,14 @@
             {
               "xml": "<feature name=\"Cifs\"><param name=\"android-package\" value=\"org.apache.cordova.cifs.Cifs\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<preference name=\"android-minSdkVersion\" value=\"23\" />",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"WifiManagerPlugin\"><param name=\"android-package\" value=\"dk.kapetanovic.wifimanager.WifiManagerPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
             }
           ]
         }
@@ -92,6 +100,24 @@
             },
             {
               "xml": "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />",
+              "count": 1
+            }
+          ],
+          "/manifest": [
+            {
+              "xml": "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
+              "count": 1
+            },
+            {
+              "xml": "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\" />",
               "count": 1
             }
           ]
@@ -124,6 +150,9 @@
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     },
     "cordova-plugin-cifs": {
+      "PACKAGE_NAME": "io.rowrabbit.nasmusic"
+    },
+    "cordova-plugin-android-wifi-manager": {
       "PACKAGE_NAME": "io.rowrabbit.nasmusic"
     }
   },
@@ -342,6 +371,14 @@
       "clobbers": [
         "cifs"
       ]
+    },
+    {
+      "id": "cordova-plugin-android-wifi-manager.WifiManager",
+      "file": "plugins/cordova-plugin-android-wifi-manager/www/index.js",
+      "pluginId": "cordova-plugin-android-wifi-manager",
+      "clobbers": [
+        "cordova.plugins.WifiManager"
+      ]
     }
   ],
   "plugin_metadata": {
@@ -351,6 +388,7 @@
     "cordova-plugin-backbutton": "0.3.0",
     "cordova-plugin-file": "6.0.1",
     "cordova-plugin-media": "5.0.2-dev",
-    "cordova-plugin-cifs": "1.0.0"
+    "cordova-plugin-cifs": "1.0.0",
+    "cordova-plugin-android-wifi-manager": "1.0.0"
   }
 }
