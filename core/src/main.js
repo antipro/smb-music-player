@@ -69,20 +69,25 @@ new Vue({
         return
       }
       db.transaction('rw', db.directories, db.files, async () => {
+        Vue.set(directory, 'inprogress', true)
         await db.files.where('fid').equals(directory.id).delete()
         directory.files = 0
-        Vue.set(directory, 'inprogress', true)
         window.cifs.getfiles(directory.url, resp => {
           if (resp.status === 'processing') {
+            let fileCount = 0
             for (const file of resp.files) {
+              if (!file.name.match(/(mp3|m4a|flac|wav|mp4)$/i)) {
+                continue
+              }
               db.files.put({
                 name: file.name,
                 url: file.url,
                 length: file.length,
                 fid: directory.id
               })
+              fileCount++
             }
-            directory.files += resp.files.length
+            directory.files += fileCount
           } else if (resp.status === 'finished') {
             Vue.delete(directory, 'inprogress')
             directory.lastupdate = new Date()
@@ -93,6 +98,7 @@ new Vue({
           console.log(error)
         })
       }).catch(error => {
+        Vue.delete(directory, 'inprogress')
         console.log(error)
       })
     }

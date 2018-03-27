@@ -19,7 +19,7 @@
         </span>
         <div
           class="btn-group"
-          v-show="directory.inprogress === false">
+          v-show="directory.inprogress === undefined">
           <span
             class="mdc-list-item__meta material-icons"
             aria-label="Refresh Directory"
@@ -38,7 +38,7 @@
         <div
           role="progressbar"
           class="mdc-linear-progress mdc-linear-progress--indeterminate"
-          v-show="directory.inprogress === true">
+          v-show="directory.inprogress">
           <div class="mdc-linear-progress__buffering-dots"></div>
           <div class="mdc-linear-progress__buffer"></div>
           <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
