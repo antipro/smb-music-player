@@ -1,7 +1,7 @@
 {
-  "name": "nas-music-player",
+  "name": "smb-music-player",
   "version": "1.0.0",
-  "description": "A Nas Music Player",
+  "description": "A music player over smb network.",
   "author": "antipro <antipro@163.com>",
   "private": true,
   "scripts": {
