@@ -9,7 +9,7 @@
           <i class="material-icons" aria-hidden="true">folder</i>
         </span>
         <span class="mdc-list-item__text">
-          {{ directory.name }}
+          {{ directory.name }} ({{ directory.reachable }})
           <span class="mdc-list-item__secondary-text">
             Files: {{ directory.files }}
           </span>

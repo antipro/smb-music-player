@@ -107,7 +107,8 @@ export default {
       })
     },
     showFiles () {
-      db.files.limit(100).toArray(filelist => {
+      let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
+      db.files.where('fid').anyOf(fidlist).limit(100).toArray(filelist => {
         this.filelist = filelist
       })
     },
@@ -127,8 +128,10 @@ export default {
         return
       }
       this.filelist = []
+      let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
+      console.log(fidlist)
       let regex = new RegExp(val, 'i')
-      db.files.filter(file => regex.test(file.name)).limit(100).toArray(filelist => {
+      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(100).toArray(filelist => {
         this.filelist = filelist
       })
     }

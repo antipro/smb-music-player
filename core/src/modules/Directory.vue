@@ -85,8 +85,9 @@ export default {
         })
         this.currentUrl = this.$route.params.url
         this.$parent.showMsg('Select Directory By Long Press')
-      }, function (err) {
-        this.$parent.showMsg(err)
+      }, function (error) {
+        console.error(error)
+        this.$parent.showMsg('CIFS Error')
       })
     } else {
       this.directorylist = [ {
@@ -110,8 +111,9 @@ export default {
         })
         this.currentUrl = url
         document.querySelector('.main').scrollTop = 0
-      }, function (err) {
-        this.$parent.showMsg(err)
+      }, function (error) {
+        console.error(error)
+        this.$parent.showMsg('CIFS Error')
       })
     },
     rollBack () {
@@ -126,8 +128,9 @@ export default {
           return file.directory && !file.name.endsWith('$/')
         })
         document.querySelector('.main').scrollTop = 0
-      }, function (err) {
-        this.$parent.showMsg(err)
+      }, function (error) {
+        console.error(error)
+        this.$parent.showMsg('CIFS Error')
         this.parentUrlStack.push(this.currentUrl)
         this.currentUrl = oldUrl
       })

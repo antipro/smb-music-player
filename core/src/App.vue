@@ -39,7 +39,7 @@
 <style src='./assets/appshell.css'></style>
 
 <style lang="scss">
-@import "@material/button/mdc-button";
+@import "@material/button/mdc-button";;
 @import "@material/fab/mdc-fab";
 @import "@material/list/mdc-list";
 @import "@material/form-field/mdc-form-field";
@@ -104,16 +104,19 @@ export default {
           history.back()
         }
       }, false)
-      window.cordova.plugins.WifiManager.onnetworkstatechanged = function (data) {
-        if (data.BSSID !== null && data.wifiInfo !== null && data.networkInfo.state === 'CONNECTED') {
-          console.log('connected:' + data.networkInfo.extraInfo)
-          // check directories reachable
+      document.addEventListener('offline', () => {
+        console.log('offline')
+        this.$root.directorylist.forEach(directory => {
+          directory.reachable = false
+        })
+      }, false)
+      document.addEventListener('online', () => {
+        console.log('online')
+        var networkState = navigator.connection.type
+        if (networkState === window.Connection.WIFI) {
+          this.$root.refreshAll()
         }
-        if (data.BSSID === null && data.wifiInfo === null && data.networkInfo.state === 'DISCONNECTED') {
-          console.log('disconnected', data)
-          // all directories unreachable
-        }
-      }
+      }, false)
     }, false)
   },
   methods: {

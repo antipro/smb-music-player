@@ -31,14 +31,15 @@ new Vue({
       db.directories.toArray((directorylist) => {
         this.directorylist = directorylist
         this.directorylist.forEach(directory => {
-          if (directory.lastupdate !== null) {
-            return
-          }
           this.checkDir(directory)
         })
       })
     },
     refresh (directory) {
+      if (!directory.reachable) {
+        this.$children[0].showMsg('Directory unreachable')
+        return
+      }
       this.updateDir(directory)
     },
     remove (directory) {
@@ -51,23 +52,35 @@ new Vue({
           return d.id !== directory.id
         })
         Vue.delete(directory, 'inprogress')
-      }).catch(err => {
+      }).catch(error => {
         Vue.delete(directory, 'inprogress')
-        console.log(err)
-        // this.$parent.showMsg('Error')
+        console.error(error)
+        this.$children[0].showMsg('Error')
       })
     },
     checkDir (directory) {
       if (!window.cifs) {
         return
       }
-      console.log('checkDir')
+      Vue.set(directory, 'reachable', false)
+      let networkState = navigator.connection.type
+      if (networkState !== window.Connection.WIFI) {
+        directory.reachable = false
+        return
+      }
       window.cifs.exist(directory.url, bool => {
-        if (bool && directory.lastupdate === null) {
+        if (!bool) {
+          directory.reachable = false
+          return
+        }
+        directory.reachable = true
+        if (directory.lastupdate === null) {
           this.updateDir(directory)
         }
       }, error => {
-        console.log(error)
+        directory.reachable = false
+        console.error(error)
+        this.$children[0].showMsg('Error')
       })
     },
     updateDir (directory) {
@@ -101,11 +114,13 @@ new Vue({
           }
         }, error => {
           Vue.delete(directory, 'inprogress')
-          console.log(error)
+          console.error(error)
+          this.$children[0].showMsg('CIFS Error')
         })
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
-        console.log(error)
+        console.error(error)
+        this.$children[0].showMsg('Update Error')
       })
     },
     play (file) {
@@ -129,7 +144,8 @@ new Vue({
           audioPlayer = new window.Media(window.cordova.file.cacheDirectory + res.filename, () => {
             this.msgbus.$emit('toggleplay', false)
           }, mediaError => {
-            console.log(JSON.stringify(mediaError))
+            console.error(mediaError)
+            this.$children[0].showMsg('Play Error')
           }, mediaStatus => {
             this.changeStatus(mediaStatus)
           })
@@ -137,7 +153,8 @@ new Vue({
         }
       }, (error) => {
         this.currentFile = null
-        console.log(error)
+        console.error(error)
+        this.$children[0].showMsg('Download Error')
       })
     },
     resume () {
@@ -197,6 +214,7 @@ new Vue({
               this.msgbus.$emit('status', formatTime(position) + '/' + formatTime(duration))
             }, error => {
               console.log(error)
+              this.$children[0].showMsg('Position Error')
             })
           }, 1000)
           break
