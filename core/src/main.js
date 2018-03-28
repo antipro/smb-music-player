@@ -80,7 +80,6 @@ new Vue({
       }, error => {
         directory.reachable = false
         console.error(error)
-        this.$children[0].showMsg('Error')
       })
     },
     updateDir (directory) {
