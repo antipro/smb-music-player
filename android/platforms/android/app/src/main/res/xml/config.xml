@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.rowrabbit.nasmusic" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.rowrabbit.smbmusic" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="InAppBrowser">
         <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
     </feature>
@@ -24,8 +24,8 @@
     <feature name="NetworkStatus">
         <param name="android-package" value="org.apache.cordova.networkinformation.NetworkManager" />
     </feature>
-    <name>NasMusic</name>
-    <description>A nas music player.</description>
+    <name>SMB Music</name>
+    <description>A music player over smb network.</description>
     <author email="antipro@163.com" href="http://">Cheng Zhang</author>
     <content src="index.html" />
     <access origin="*" />

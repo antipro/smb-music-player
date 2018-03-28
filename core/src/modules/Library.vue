@@ -9,7 +9,7 @@
           <i class="material-icons" aria-hidden="true">folder</i>
         </span>
         <span class="mdc-list-item__text">
-          {{ directory.name }} ({{ directory.reachable }})
+          {{ directory.name }}
           <span class="mdc-list-item__secondary-text">
             Files: {{ directory.files }}
           </span>
@@ -23,9 +23,17 @@
           <span
             class="mdc-list-item__meta material-icons"
             aria-label="Refresh Directory"
-            title="Refresh"
+            title="Sync"
+            v-if="directory.reachable"
             @click.stop="$root.refresh(directory)">
-            refresh
+            sync
+          </span>
+          <span
+            class="mdc-list-item__meta material-icons"
+            aria-label="Refresh Directory"
+            title="Sync disabled"
+            v-else>
+            sync_disabled
           </span>
           <span
             class="mdc-list-item__meta material-icons"

@@ -17,7 +17,7 @@
        under the License.
  */
 
-package io.rowrabbit.nasmusic;
+package io.rowrabbit.smbmusic;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
