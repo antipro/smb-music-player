@@ -11,6 +11,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "cordova-android": "^7.0.0",
+    "cordova-plugin-android-wifi-manager": "git+https://github.com/kapetan/cordova-plugin-android-wifi-manager.git",
     "cordova-plugin-backbutton": "^0.3.0",
     "cordova-plugin-cifs": "file:../../cordova-plugin-cifs",
     "cordova-plugin-crosswalk-webview": "^2.4.0",
@@ -33,7 +34,8 @@
       "cordova-plugin-backbutton": {},
       "cordova-plugin-media": {},
       "cordova-plugin-cifs": {},
-      "cordova-plugin-network-information": {}
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-android-wifi-manager": {}
     },
     "platforms": [
       "android"

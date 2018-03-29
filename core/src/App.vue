@@ -21,12 +21,13 @@
     <section class='side-nav' @click="hideMenu" :class="{ 'side-nav--visible': menuVisible }">
       <div class='side-nav__content js-side-nav-content' :style="{ 'transform': transform }">
         <div class='side-nav__header'>
-          <h1 class='side-nav__title'>Nas Music Player</h1>
+          <h1 class='side-nav__title'>SMB Music</h1>
         </div>
         <div class='side-nav__body'>
           <router-link role='tab' tabindex='0' class='side-nav__player' :to="{ name: 'player' }">Player</router-link>
           <router-link role='tab' tabindex='1' class='side-nav__library' :to="{ name: 'library' }">Library</router-link>
-          <router-link role='tab' tabindex='2' class='side-nav__about' :to="{ name: 'about' }">About</router-link>
+          <router-link role='tab' tabindex='2' class='side-nav__setting' :to="{ name: 'setting' }">Setting</router-link>
+          <router-link role='tab' tabindex='3' class='side-nav__about' :to="{ name: 'about' }">About</router-link>
         </div>
 
       </div>
@@ -76,7 +77,9 @@ export default {
       menuVisible: false,
       transform: 'translateX(-102%)',
       message: '',
-      confirmTitle: ''
+      confirmTitle: '',
+      online: false,
+      ssid: ''
     }
   },
   created () {
@@ -85,6 +88,7 @@ export default {
   },
   mounted () {
     document.addEventListener('deviceready', () => {
+      this.checkOnline()
       document.addEventListener('backbutton', evt => {
         if (location.href.indexOf('directory') > -1) {
           this.confirmTitle = 'Exit without save?'
@@ -104,22 +108,86 @@ export default {
           history.back()
         }
       }, false)
-      document.addEventListener('offline', () => {
-        console.log('offline')
-        this.$root.directorylist.forEach(directory => {
-          directory.reachable = false
-        })
-      }, false)
-      document.addEventListener('online', () => {
-        console.log('online')
-        var networkState = navigator.connection.type
-        if (networkState === window.Connection.WIFI) {
-          this.$root.refreshAll()
+      // document.addEventListener('offline', () => {
+      //   alert('offline ' + navigator.connection.type)
+      //   if (this.online === true) {
+      //     this.online = false
+      //     this.ssid = ''
+      //     this.$root.directorylist.forEach(directory => {
+      //       directory.reachable = false
+      //     })
+      //   } else {
+      //     console.log('already offline')
+      //   }
+      // }, false)
+      // document.addEventListener('online', () => {
+      //   if (navigator.connection.type !== window.Connection.WIFI) {
+      //     return
+      //   }
+      //   alert('online ' + navigator.connection.type)
+      //   if (this.online === false) {
+      //     this.online = true
+      //     this.checkOnline()
+      //   } else {
+      //     console.log('already online')
+      //   }
+      //   // var networkState = navigator.connection.type
+      //   // if (networkState === window.Connection.WIFI) {
+      //   //   this.$root.refreshAll()
+      //   // }
+      // }, false)
+      // document.addEventListener('resume', () => {
+      //   alert('resume')
+      //   this.checkOnline()
+      // }, false)
+      window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
+        if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
+          console.log(data)
+          alert('connected ' + navigator.connection.type)
+          if (this.online === false) {
+            this.online = true
+            this.checkOnline()
+          } else {
+            console.log('already online')
+          }
         }
-      }, false)
+        if (data.BSSID === null && data.networkInfo.state === 'DISCONNECTED' && data.wifiInfo === null) {
+          console.log(data)
+          alert('disconnected ' + navigator.connection.type)
+          if (this.online === true) {
+            this.online = false
+            this.ssid = ''
+            this.$root.directorylist.forEach(directory => {
+              directory.reachable = false
+            })
+          } else {
+            console.log('already offline')
+          }
+        }
+      }
     }, false)
   },
   methods: {
+    checkOnline () {
+      window.cordova.plugins.WifiManager.getConnectionInfo((err, wifiInfo) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        console.log(wifiInfo)
+        if (!wifiInfo.BSSID) {
+          console.log('No wifi')
+          this.ssid = ''
+          return
+        }
+        if (this.ssid !== wifiInfo.SSID) {
+          this.ssid = wifiInfo.SSID
+          setTimeout(() => {
+            this.$root.refreshAll()
+          }, 3000)
+        }
+      })
+    },
     showMenu () {
       this.menuVisible = true
       this.transform = 'translateX(0px)'

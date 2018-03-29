@@ -23,7 +23,7 @@ new Vue({
     msgbus: new Vue(),
     mediaStatus: null
   },
-  created () {
+  mounted () {
     this.refreshAll()
   },
   methods: {
@@ -44,9 +44,8 @@ new Vue({
     },
     remove (directory) {
       Vue.set(directory, 'inprogress', true)
-      db.transaction('rw', db.directories, db.files, async () => {
-        db.directories.delete(directory.id)
-        db.files.where('fid').equals(directory.id).delete()
+      db.directories.delete(directory.id).then(() => {
+        return db.files.where('fid').equals(directory.id).delete()
       }).then(() => {
         this.directorylist = this.directorylist.filter(d => {
           return d.id !== directory.id
@@ -86,9 +85,8 @@ new Vue({
       if (!window.cifs) {
         return
       }
-      db.transaction('rw', db.directories, db.files, async () => {
-        Vue.set(directory, 'inprogress', true)
-        await db.files.where('fid').equals(directory.id).delete()
+      Vue.set(directory, 'inprogress', true)
+      db.files.where('fid').equals(directory.id).delete().then(() => {
         directory.files = 0
         window.cifs.getfiles(directory.url, resp => {
           if (resp.status === 'processing') {
@@ -132,6 +130,7 @@ new Vue({
       }
       this.currentFile = file
       this.msgbus.$emit('position', file)
+      audioPlayer = null
       window.cifs.download(file.url, (res) => {
         if (this.currentFile.url !== file.url) {
           return

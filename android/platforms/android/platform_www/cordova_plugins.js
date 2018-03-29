@@ -215,14 +215,6 @@ module.exports = [
     ]
   },
   {
-    "id": "cordova-plugin-android-wifi-manager.WifiManager",
-    "file": "plugins/cordova-plugin-android-wifi-manager/www/index.js",
-    "pluginId": "cordova-plugin-android-wifi-manager",
-    "clobbers": [
-      "cordova.plugins.WifiManager"
-    ]
-  },
-  {
     "id": "cordova-plugin-network-information.network",
     "file": "plugins/cordova-plugin-network-information/www/network.js",
     "pluginId": "cordova-plugin-network-information",
@@ -238,6 +230,14 @@ module.exports = [
     "clobbers": [
       "Connection"
     ]
+  },
+  {
+    "id": "cordova-plugin-android-wifi-manager.WifiManager",
+    "file": "plugins/cordova-plugin-android-wifi-manager/www/index.js",
+    "pluginId": "cordova-plugin-android-wifi-manager",
+    "clobbers": [
+      "cordova.plugins.WifiManager"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -250,8 +250,8 @@ module.exports.metadata =
   "cordova-plugin-file": "6.0.1",
   "cordova-plugin-media": "5.0.2-dev",
   "cordova-plugin-cifs": "1.0.0",
-  "cordova-plugin-android-wifi-manager": "1.0.0",
-  "cordova-plugin-network-information": "2.0.1"
+  "cordova-plugin-network-information": "2.0.1",
+  "cordova-plugin-android-wifi-manager": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

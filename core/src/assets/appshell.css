@@ -370,12 +370,15 @@ button::-moz-focus-inner {
 .side-nav__library {
   background-image: url(images/ic_storage_black_24px.svg);
 }
+.side-nav__setting {
+  background-image: url(images/ic_settings_black_24px.svg);
+}
 .side-nav__about {
   background-image: url(images/ic_info_black_24px.svg);
 }
 
 .main {
-  padding-top: 72px;
+  padding-top: 56px;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;

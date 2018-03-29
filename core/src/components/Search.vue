@@ -12,7 +12,13 @@
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': floated }">Song Name</label>
+        :class="{ 'mdc-floating-label--float-above': floated }">Search...</label>
+      <i
+        v-show="phrase !== ''"
+        class="material-icons mdc-text-field__icon"
+        style="right: 15px; left: initial"
+        tabindex="0"
+        @click="phrase = ''">clear</i>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
     <ul class="mdc-list mdc-list--two-line">

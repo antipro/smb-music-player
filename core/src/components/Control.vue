@@ -44,6 +44,7 @@
 }
 .control .mdc-fab {
   margin: 15px 3px;
+  flex-shrink: 0;
 }
 .control .play-btn {
   font-size: 48px;
@@ -75,6 +76,7 @@ export default {
     return {
       msgbus: null,
       playing: false,
+      filename: '',
       status: '',
       progress: 'scaleX(0)'
     }
@@ -90,7 +92,7 @@ export default {
     this.msgbus.$on('status', (status) => {
       this.status = status
     })
-    if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
+    if (window.Media && this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
       this.playing = true
     }
   },

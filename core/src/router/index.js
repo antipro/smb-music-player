@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Player from '@/modules/Player'
 import Library from '@/modules/Library'
+import Setting from '@/modules/Setting'
 import About from '@/modules/About'
 import Auth from '@/modules/Auth'
 import Directory from '@/modules/Directory'
@@ -34,6 +35,11 @@ export default new Router({
       path: '/about',
       name: 'about',
       component: About
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
     }
   ]
 })
