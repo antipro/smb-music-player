@@ -65,6 +65,7 @@ $mdc-theme-background: #ffffff;
 import { MDCRipple } from '@material/ripple'
 import mdcAutoInit from '@material/auto-init'
 import Confirm from '@/components/Confirm'
+import Vue from 'vue'
 
 let resp = () => {
   console.log('Nothing.')
@@ -143,7 +144,7 @@ export default {
       window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
           console.log(data)
-          alert('connected ' + navigator.connection.type)
+          alert('connected ' + data.networkInfo.type)
           if (this.online === false) {
             this.online = true
             this.checkOnline()
@@ -158,7 +159,7 @@ export default {
             this.online = false
             this.ssid = ''
             this.$root.directorylist.forEach(directory => {
-              directory.reachable = false
+              Vue.set(directory, 'reachable', false)
             })
           } else {
             console.log('already offline')
@@ -178,13 +179,14 @@ export default {
         if (!wifiInfo.BSSID) {
           console.log('No wifi')
           this.ssid = ''
+          this.online = false
+          this.$root.refreshAll(false)
           return
         }
+        this.online = true
         if (this.ssid !== wifiInfo.SSID) {
           this.ssid = wifiInfo.SSID
-          setTimeout(() => {
-            this.$root.refreshAll()
-          }, 3000)
+          this.$root.refreshAll(true)
         }
       })
     },

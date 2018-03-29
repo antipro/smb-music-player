@@ -207,14 +207,6 @@ module.exports = [
     ]
   },
   {
-    "id": "cordova-plugin-cifs.cifs",
-    "file": "plugins/cordova-plugin-cifs/www/cifs.js",
-    "pluginId": "cordova-plugin-cifs",
-    "clobbers": [
-      "cifs"
-    ]
-  },
-  {
     "id": "cordova-plugin-network-information.network",
     "file": "plugins/cordova-plugin-network-information/www/network.js",
     "pluginId": "cordova-plugin-network-information",
@@ -238,6 +230,14 @@ module.exports = [
     "clobbers": [
       "cordova.plugins.WifiManager"
     ]
+  },
+  {
+    "id": "cordova-plugin-cifs.cifs",
+    "file": "plugins/cordova-plugin-cifs/www/cifs.js",
+    "pluginId": "cordova-plugin-cifs",
+    "clobbers": [
+      "cifs"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -249,9 +249,9 @@ module.exports.metadata =
   "cordova-plugin-backbutton": "0.3.0",
   "cordova-plugin-file": "6.0.1",
   "cordova-plugin-media": "5.0.2-dev",
-  "cordova-plugin-cifs": "1.0.0",
   "cordova-plugin-network-information": "2.0.1",
-  "cordova-plugin-android-wifi-manager": "1.0.0"
+  "cordova-plugin-android-wifi-manager": "1.0.0",
+  "cordova-plugin-cifs": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

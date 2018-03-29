@@ -33,9 +33,9 @@
       },
       "cordova-plugin-backbutton": {},
       "cordova-plugin-media": {},
-      "cordova-plugin-cifs": {},
       "cordova-plugin-network-information": {},
-      "cordova-plugin-android-wifi-manager": {}
+      "cordova-plugin-android-wifi-manager": {},
+      "cordova-plugin-cifs": {}
     },
     "platforms": [
       "android"

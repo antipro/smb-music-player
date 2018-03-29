@@ -23,15 +23,16 @@ new Vue({
     msgbus: new Vue(),
     mediaStatus: null
   },
-  mounted () {
-    this.refreshAll()
-  },
   methods: {
-    refreshAll () {
+    refreshAll (bool) {
       db.directories.toArray((directorylist) => {
         this.directorylist = directorylist
         this.directorylist.forEach(directory => {
-          this.checkDir(directory)
+          if (bool) {
+            this.checkDir(directory)
+          } else {
+            Vue.set(directory, 'reachable', false)
+          }
         })
       })
     },
@@ -62,24 +63,26 @@ new Vue({
         return
       }
       Vue.set(directory, 'reachable', false)
-      let networkState = navigator.connection.type
-      if (networkState !== window.Connection.WIFI) {
-        directory.reachable = false
-        return
-      }
-      window.cifs.exist(directory.url, bool => {
-        if (!bool) {
+      let retry = 0
+      let cb = () => {
+        window.cifs.exist(directory.url, bool => {
+          if (!bool) {
+            directory.reachable = false
+            return
+          }
+          directory.reachable = true
+          if (directory.lastupdate === null) {
+            this.updateDir(directory)
+          }
+        }, error => {
           directory.reachable = false
-          return
-        }
-        directory.reachable = true
-        if (directory.lastupdate === null) {
-          this.updateDir(directory)
-        }
-      }, error => {
-        directory.reachable = false
-        console.error(error)
-      })
+          if (error.indexOf('Broken pipe') > -1 && retry++ <= 3) {
+            console.error('exist', error)
+            setTimeout(cb, 2000)
+          }
+        })
+      }
+      cb()
     },
     updateDir (directory) {
       if (!window.cifs) {
