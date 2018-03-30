@@ -29,7 +29,6 @@
           <router-link role='tab' tabindex='2' class='side-nav__setting' :to="{ name: 'setting' }">Setting</router-link>
           <router-link role='tab' tabindex='3' class='side-nav__about' :to="{ name: 'about' }">About</router-link>
         </div>
-
       </div>
     </section>
 
@@ -65,7 +64,6 @@ $mdc-theme-background: #ffffff;
 import { MDCRipple } from '@material/ripple'
 import mdcAutoInit from '@material/auto-init'
 import Confirm from '@/components/Confirm'
-import Vue from 'vue'
 
 let resp = () => {
   console.log('Nothing.')
@@ -78,118 +76,14 @@ export default {
       menuVisible: false,
       transform: 'translateX(-102%)',
       message: '',
-      confirmTitle: '',
-      online: false,
-      ssid: ''
+      confirmTitle: ''
     }
   },
   created () {
     mdcAutoInit.deregister('MDCRipple')
     mdcAutoInit.register('MDCRipple', MDCRipple)
   },
-  mounted () {
-    document.addEventListener('deviceready', () => {
-      this.checkOnline()
-      document.addEventListener('backbutton', evt => {
-        if (location.href.indexOf('directory') > -1) {
-          this.confirmTitle = 'Exit without save?'
-          resp = (bool) => {
-            this.confirmTitle = ''
-            if (bool) {
-              history.back()
-            }
-          }
-        } else if (location.href.endsWith('#/')) {
-          navigator.Backbutton.goHome(function () {
-            console.log('go home success')
-          }, function () {
-            console.log('go home fail')
-          })
-        } else {
-          history.back()
-        }
-      }, false)
-      // document.addEventListener('offline', () => {
-      //   alert('offline ' + navigator.connection.type)
-      //   if (this.online === true) {
-      //     this.online = false
-      //     this.ssid = ''
-      //     this.$root.directorylist.forEach(directory => {
-      //       directory.reachable = false
-      //     })
-      //   } else {
-      //     console.log('already offline')
-      //   }
-      // }, false)
-      // document.addEventListener('online', () => {
-      //   if (navigator.connection.type !== window.Connection.WIFI) {
-      //     return
-      //   }
-      //   alert('online ' + navigator.connection.type)
-      //   if (this.online === false) {
-      //     this.online = true
-      //     this.checkOnline()
-      //   } else {
-      //     console.log('already online')
-      //   }
-      //   // var networkState = navigator.connection.type
-      //   // if (networkState === window.Connection.WIFI) {
-      //   //   this.$root.refreshAll()
-      //   // }
-      // }, false)
-      // document.addEventListener('resume', () => {
-      //   alert('resume')
-      //   this.checkOnline()
-      // }, false)
-      window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
-        if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
-          console.log(data)
-          alert('connected ' + data.networkInfo.type)
-          if (this.online === false) {
-            this.online = true
-            this.checkOnline()
-          } else {
-            console.log('already online')
-          }
-        }
-        if (data.BSSID === null && data.networkInfo.state === 'DISCONNECTED' && data.wifiInfo === null) {
-          console.log(data)
-          alert('disconnected ' + navigator.connection.type)
-          if (this.online === true) {
-            this.online = false
-            this.ssid = ''
-            this.$root.directorylist.forEach(directory => {
-              Vue.set(directory, 'reachable', false)
-            })
-          } else {
-            console.log('already offline')
-          }
-        }
-      }
-    }, false)
-  },
   methods: {
-    checkOnline () {
-      window.cordova.plugins.WifiManager.getConnectionInfo((err, wifiInfo) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-        console.log(wifiInfo)
-        if (!wifiInfo.BSSID) {
-          console.log('No wifi')
-          this.ssid = ''
-          this.online = false
-          this.$root.refreshAll(false)
-          return
-        }
-        this.online = true
-        if (this.ssid !== wifiInfo.SSID) {
-          this.ssid = wifiInfo.SSID
-          this.$root.refreshAll(true)
-        }
-      })
-    },
     showMenu () {
       this.menuVisible = true
       this.transform = 'translateX(0px)'
@@ -203,6 +97,15 @@ export default {
       setTimeout(() => {
         this.message = ''
       }, 3000)
+    },
+    showConfirm () {
+      this.confirmTitle = 'Exit without save?'
+      resp = (bool) => {
+        this.confirmTitle = ''
+        if (bool) {
+          history.back()
+        }
+      }
     },
     confirmed (bool) {
       resp(bool)

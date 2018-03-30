@@ -21,9 +21,68 @@ new Vue({
     directorylist: [],
     currentFile: null,
     msgbus: new Vue(),
-    mediaStatus: null
+    mediaStatus: null,
+    online: false,
+    ssid: ''
+  },
+  mounted () {
+    document.addEventListener('deviceready', () => {
+      this.checkOnline()
+      document.addEventListener('backbutton', evt => {
+        if (location.href.indexOf('directory') > -1) {
+          this.$children[0].showConfirm()
+        } else if (location.href.endsWith('#/')) {
+          navigator.Backbutton.goHome(function () {
+            console.log('go home success')
+          }, function () {
+            console.log('go home fail')
+          })
+        } else {
+          history.back()
+        }
+      }, false)
+      window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
+        if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
+          console.log(data)
+          alert('connected ' + data.networkInfo.type)
+          this.checkOnline()
+        }
+        if (data.BSSID === null && data.networkInfo.state === 'DISCONNECTED' && data.wifiInfo === null) {
+          console.log(data)
+          alert('disconnected ' + navigator.connection.type)
+          if (this.online === true) {
+            this.online = false
+            this.ssid = ''
+            this.refreshAll(false)
+          } else {
+            console.log('already offline')
+          }
+        }
+      }
+    }, false)
   },
   methods: {
+    checkOnline () {
+      window.cordova.plugins.WifiManager.getConnectionInfo((err, wifiInfo) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        console.log(wifiInfo)
+        if (!wifiInfo.BSSID) {
+          console.log('No wifi')
+          this.ssid = ''
+          this.online = false
+          this.refreshAll(false)
+          return
+        }
+        this.online = true
+        if (this.ssid !== wifiInfo.SSID) {
+          this.ssid = wifiInfo.SSID
+          this.refreshAll(true)
+        }
+      })
+    },
     refreshAll (bool) {
       db.directories.toArray((directorylist) => {
         this.directorylist = directorylist
