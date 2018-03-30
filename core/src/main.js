@@ -23,14 +23,15 @@ new Vue({
     msgbus: new Vue(),
     mediaStatus: null,
     online: false,
-    ssid: ''
+    ssid: '',
+    app: this.$children[0]
   },
   mounted () {
     document.addEventListener('deviceready', () => {
       this.checkOnline()
       document.addEventListener('backbutton', evt => {
         if (location.href.indexOf('directory') > -1) {
-          this.$children[0].showConfirm()
+          this.app.showConfirm()
         } else if (location.href.endsWith('#/')) {
           navigator.Backbutton.goHome(function () {
             console.log('go home success')
@@ -97,7 +98,7 @@ new Vue({
     },
     refresh (directory) {
       if (!directory.reachable) {
-        this.$children[0].showMsg('Directory unreachable')
+        this.app.showMsg('Directory unreachable')
         return
       }
       this.updateDir(directory)
@@ -114,7 +115,7 @@ new Vue({
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
         console.error(error)
-        this.$children[0].showMsg('Error')
+        this.app.showMsg('Error')
       })
     },
     checkDir (directory) {
@@ -122,26 +123,19 @@ new Vue({
         return
       }
       Vue.set(directory, 'reachable', false)
-      let retry = 0
-      let cb = () => {
-        window.cifs.exist(directory.url, bool => {
-          if (!bool) {
-            directory.reachable = false
-            return
-          }
-          directory.reachable = true
-          if (directory.lastupdate === null) {
-            this.updateDir(directory)
-          }
-        }, error => {
+      window.cifs.exist(directory.url, bool => {
+        if (!bool) {
           directory.reachable = false
-          if (error.indexOf('Broken pipe') > -1 && retry++ <= 3) {
-            console.error('exist', error)
-            setTimeout(cb, 2000)
-          }
-        })
-      }
-      cb()
+          return
+        }
+        directory.reachable = true
+        if (directory.lastupdate === null) {
+          this.updateDir(directory)
+        }
+      }, error => {
+        directory.reachable = false
+        console.error(error)
+      })
     },
     updateDir (directory) {
       if (!window.cifs) {
@@ -174,12 +168,12 @@ new Vue({
         }, error => {
           Vue.delete(directory, 'inprogress')
           console.error(error)
-          this.$children[0].showMsg('CIFS Error')
+          this.app.showMsg('CIFS Error')
         })
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
         console.error(error)
-        this.$children[0].showMsg('Update Error')
+        this.app.showMsg('Update Error')
       })
     },
     play (file) {
@@ -205,7 +199,7 @@ new Vue({
             this.msgbus.$emit('toggleplay', false)
           }, mediaError => {
             console.error(mediaError)
-            this.$children[0].showMsg('Play Error')
+            this.app.showMsg('Play Error')
           }, mediaStatus => {
             this.changeStatus(mediaStatus)
           })
@@ -214,7 +208,7 @@ new Vue({
       }, (error) => {
         this.currentFile = null
         console.error(error)
-        this.$children[0].showMsg('Download Error')
+        this.app.showMsg('Download Error')
       })
     },
     resume () {
@@ -274,7 +268,7 @@ new Vue({
               this.msgbus.$emit('status', formatTime(position) + '/' + formatTime(duration))
             }, error => {
               console.log(error)
-              this.$children[0].showMsg('Position Error')
+              this.app.showMsg('Position Error')
             })
           }, 1000)
           break
