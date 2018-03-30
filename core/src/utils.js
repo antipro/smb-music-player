@@ -45,7 +45,7 @@ function formatTime (seconds) {
 /**
  * return FileSystemEntry according to url
  * @param {string} url
- * @returns Promise 
+ * @returns Promise
  */
 function resolveFileEntry (url) {
   return new Promise(function (resolve, reject) {
@@ -59,9 +59,9 @@ function resolveFileEntry (url) {
 
 /**
  * move file to directory
- * @param {FileSystemEntry} fileEntry 
- * @param {FileSystemEntry} dirEntry 
- * @param {string} newName 
+ * @param {FileSystemEntry} fileEntry
+ * @param {FileSystemEntry} dirEntry
+ * @param {string} newName
  * @returns Promise
  */
 function moveFileEntry (fileEntry, dirEntry, newName) {

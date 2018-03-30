@@ -119,7 +119,17 @@ export default {
       })
     },
     select (file) {
-      this.$root.play(file)
+      console.log(file.type)
+      switch (file.type) {
+        case 0:
+          // TODO play localhost music just for test
+          break
+        case 1:
+          // TODO play music from sdcard
+          break
+        case 2:
+          this.$root.playSmbFile(file)
+      }
     }
   },
   computed: {

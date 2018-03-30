@@ -25,7 +25,7 @@
             aria-label="Refresh Directory"
             title="Sync"
             v-if="directory.reachable"
-            @click.stop="$root.refresh(directory)">
+            @click.stop="$root.updateDir(directory)">
             sync
           </span>
           <span
@@ -39,7 +39,7 @@
             class="mdc-list-item__meta material-icons"
             aria-label="Delete Directory"
             title="Delete"
-            @click.stop="$root.remove(directory)">
+            @click.stop="$root.removeDir(directory)">
             delete
           </span>
         </div>

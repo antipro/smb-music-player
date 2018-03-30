@@ -150,14 +150,17 @@ export default {
       if (!this.selectedDirectory.url) {
         return
       }
-      db.directories.add({
+      let directory = {
         name: this.selectedDirectory.name,
         url: this.selectedDirectory.url,
         files: 0,
         type: 2,
         lastupdate: null
-      }).then(() => {
-        this.$root.refreshAll()
+      }
+      db.directories.add(directory).then((id) => {
+        directory.id = id
+        this.$root.directorylist.push(directory)
+        this.$root.checkDir(directory)
       })
       history.go(-1)
     }

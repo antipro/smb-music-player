@@ -99,14 +99,7 @@ new Vue({
         })
       })
     },
-    refresh (directory) {
-      if (!directory.reachable) {
-        this.app.showMsg('Directory unreachable')
-        return
-      }
-      this.updateDir(directory)
-    },
-    remove (directory) {
+    removeDir (directory) {
       Vue.set(directory, 'inprogress', true)
       db.directories.delete(directory.id).then(() => {
         return db.files.where('fid').equals(directory.id).delete()
@@ -158,7 +151,8 @@ new Vue({
                 name: file.name,
                 url: file.url,
                 length: file.length,
-                fid: directory.id
+                fid: directory.id,
+                type: directory.type
               })
               fileCount++
             }
@@ -179,7 +173,7 @@ new Vue({
         this.app.showMsg('Update Error')
       })
     },
-    play (file) {
+    playSmbFile (file) {
       if (!window.cifs) {
         return
       }
@@ -190,37 +184,45 @@ new Vue({
       this.currentFile = file
       this.msgbus.$emit('position', file)
       audioPlayer = null
-      window.cifs.download(file.url, (res) => {
-        if (this.currentFile.url !== file.url) {
-          return
-        }
-        if (res.status === 'downloading') {
-          this.msgbus.$emit('status', `Buffering(${res.percent})...`)
-        }
-        if (res.status === 'finished') {
-          (async () => {
-            let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
-            let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
-            return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
-          })().then((fileEntry) => {
-            audioPlayer = new window.Media(fileEntry.toURL(), () => {
-              this.msgbus.$emit('toggleplay', false)
-            }, mediaError => {
-              console.error(mediaError)
-              this.app.showMsg('Play Error')
-            }, mediaStatus => {
-              this.changeStatus(mediaStatus)
+      resolveFileEntry(window.cordova.file.dataDirectory + 'file_' + file.id).then(fileEntry => {
+        this.play(fileEntry.toURL())
+      }).catch(error => {
+        console.log(error)
+        window.cifs.download(file.url, (res) => {
+          if (this.currentFile.url !== file.url) {
+            return
+          }
+          if (res.status === 'downloading') {
+            this.msgbus.$emit('status', `Buffering(${res.percent})...`)
+          }
+          if (res.status === 'finished') {
+            (async () => {
+              let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
+              let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
+              return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
+            })().then((fileEntry) => {
+              this.play(fileEntry.toURL())
+            }).catch(error => {
+              console.error(error)
             })
-            audioPlayer.play()
-          }).catch(error => {
-            console.error(error)
-          })
-        }
-      }, (error) => {
-        this.currentFile = null
-        console.error(error)
-        this.app.showMsg('Download Error')
+          }
+        }, (error) => {
+          this.currentFile = null
+          console.error(error)
+          this.app.showMsg('Download Error')
+        })
       })
+    },
+    play (url) {
+      audioPlayer = new window.Media(url, () => {
+        this.msgbus.$emit('toggleplay', false)
+      }, mediaError => {
+        console.error(mediaError)
+        this.app.showMsg('Play Error')
+      }, mediaStatus => {
+        this.changeStatus(mediaStatus)
+      })
+      audioPlayer.play()
     },
     resume () {
       if (!audioPlayer) {

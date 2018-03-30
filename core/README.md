@@ -1,6 +1,6 @@
-# nas-music-player
+# smb-music-player
 
-> A Nas Music Player
+> A Samba Music Player
 
 ## Build Setup
 
