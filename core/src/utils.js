@@ -42,6 +42,11 @@ function formatTime (seconds) {
   return output
 }
 
+/**
+ * return FileSystemEntry according to url
+ * @param {string} url
+ * @returns Promise 
+ */
 function resolveFileEntry (url) {
   return new Promise(function (resolve, reject) {
     window.resolveLocalFileSystemURL(url, fileEntry => {
@@ -52,6 +57,13 @@ function resolveFileEntry (url) {
   })
 }
 
+/**
+ * move file to directory
+ * @param {FileSystemEntry} fileEntry 
+ * @param {FileSystemEntry} dirEntry 
+ * @param {string} newName 
+ * @returns Promise
+ */
 function moveFileEntry (fileEntry, dirEntry, newName) {
   return new Promise(function (resolve, reject) {
     fileEntry.moveTo(dirEntry, newName, newFileEntry => {
