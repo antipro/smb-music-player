@@ -5,7 +5,7 @@ import db from './database'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import { formatTime } from './utils'
+import { formatTime, resolveFileEntry, moveFileEntry } from './utils'
 
 Vue.config.productionTip = false
 
@@ -198,15 +198,23 @@ new Vue({
           this.msgbus.$emit('status', `Buffering(${res.percent})...`)
         }
         if (res.status === 'finished') {
-          audioPlayer = new window.Media(window.cordova.file.cacheDirectory + res.filename, () => {
-            this.msgbus.$emit('toggleplay', false)
-          }, mediaError => {
-            console.error(mediaError)
-            this.app.showMsg('Play Error')
-          }, mediaStatus => {
-            this.changeStatus(mediaStatus)
+          (async () => {
+            let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
+            let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
+            return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
+          })().then((fileEntry) => {
+            audioPlayer = new window.Media(fileEntry.toURL(), () => {
+              this.msgbus.$emit('toggleplay', false)
+            }, mediaError => {
+              console.error(mediaError)
+              this.app.showMsg('Play Error')
+            }, mediaStatus => {
+              this.changeStatus(mediaStatus)
+            })
+            audioPlayer.play()
+          }).catch(error => {
+            console.error(error)
           })
-          audioPlayer.play()
         }
       }, (error) => {
         this.currentFile = null

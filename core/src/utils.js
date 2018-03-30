@@ -42,6 +42,26 @@ function formatTime (seconds) {
   return output
 }
 
+function resolveFileEntry (url) {
+  return new Promise(function (resolve, reject) {
+    window.resolveLocalFileSystemURL(url, fileEntry => {
+      resolve(fileEntry)
+    }, error => {
+      reject(error)
+    })
+  })
+}
+
+function moveFileEntry (fileEntry, dirEntry, newName) {
+  return new Promise(function (resolve, reject) {
+    fileEntry.moveTo(dirEntry, newName, newFileEntry => {
+      resolve(newFileEntry)
+    }, error => {
+      reject(error)
+    })
+  })
+}
+
 export {
-  formatTime
+  formatTime, resolveFileEntry, moveFileEntry
 }
