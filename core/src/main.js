@@ -24,7 +24,10 @@ new Vue({
     mediaStatus: null,
     online: false,
     ssid: '',
-    app: this.$children[0]
+    app: null
+  },
+  created () {
+    this.app = this.$children[0]
   },
   mounted () {
     document.addEventListener('deviceready', () => {
