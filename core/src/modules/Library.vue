@@ -6,8 +6,8 @@
       :key="directory.id">
       <div class="mdc-card__primary">
         <h2 class="mdc-typography--title">
-          <i v-if="directory.type === 0" class="material-icons" aria-hidden="true">folder</i>
-          <i v-if="directory.type === 1" class="material-icons" aria-hidden="true">folder</i>
+          <i v-if="directory.type === 0" class="material-icons" aria-hidden="true">http</i>
+          <i v-if="directory.type === 1" class="material-icons" aria-hidden="true">phone_android</i>
           <i v-if="directory.type === 2" class="material-icons" aria-hidden="true">storage</i>
           {{ directory.name }}
         </h2>
