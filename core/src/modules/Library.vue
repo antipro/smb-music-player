@@ -86,10 +86,11 @@
   padding: .5em 1em;
 }
 .library .mdc-card .mdc-card__primary > *{
-  margin: .5em auto;
+  margin: .3em auto;
 }
 .library .mdc-card .mdc-typography--body1 {
-  padding: .5em 1em;
+  padding: .3em 1em;
+  word-wrap: break-word;
 }
 .library .mdc-card .mdc-switch {
   padding: 12px
