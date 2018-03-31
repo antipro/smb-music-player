@@ -14,7 +14,7 @@
         <h5>Files: {{ directory.files }}</h5>
       </div>
       <div class="mdc-typography--body1">
-        Url: {{ directory.url }}
+        Url: {{ transform(directory.url) }}
       </div>
       <div class="mdc-card__actions">
         <div class="mdc-switch">
@@ -112,6 +112,14 @@ export default {
   name: 'library',
   created () {
     this.$parent.title = 'Library'
+  },
+  methods: {
+    transform (url) {
+      let m = url.match(/\/\/.+@/ig)
+      if (m) {
+        return url.replace(m[0], '//')
+      }
+    }
   },
   computed: {
     directorylist () {
