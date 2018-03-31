@@ -36,7 +36,7 @@
         <span class="mdc-list-item__text">
           {{ file.name }}
           <span class="mdc-list-item__secondary-text">
-            Length: {{ file.length }}
+            Length: {{ formatSize(file.length) }}
           </span>
         </span>
       </li>
@@ -56,6 +56,7 @@
 
 <script>
 import db from '../database'
+import { formatSize } from '../utils'
 
 export default {
   name: 'search',
@@ -104,6 +105,7 @@ export default {
     }
   },
   methods: {
+    formatSize: formatSize,
     select (file) {
       console.log(file.type)
       switch (file.type) {
