@@ -117,8 +117,9 @@ export default {
     transform (url) {
       let m = url.match(/\/\/.+@/ig)
       if (m) {
-        return url.replace(m[0], '//')
+        return url.replace(m[0], '//***@')
       }
+      return url
     }
   },
   computed: {
