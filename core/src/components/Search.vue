@@ -78,7 +78,7 @@ export default {
       let idx = this.filelist.findIndex(file => {
         return file.id === this.selectedId
       })
-      if (idx === -1) {
+      if (idx === undefined) {
         return
       }
       let file = this.filelist[++idx]
@@ -91,7 +91,7 @@ export default {
       let idx = this.filelist.findIndex(file => {
         return file.id === this.selectedId
       })
-      if (idx === -1) {
+      if (idx === undefined) {
         return
       }
       let file = this.filelist[--idx]
