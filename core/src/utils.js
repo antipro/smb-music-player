@@ -42,6 +42,11 @@ function formatTime (seconds) {
   return output
 }
 
+/**
+ * format bytes to harmony pattern
+ * @param {number} bytes
+ * @returns {string} xB or x.yKB or x.yMB
+ */
 function formatSize (bytes) {
   if (bytes < 1024) {
     return bytes + 'B'
