@@ -12,7 +12,7 @@
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': floated }">Search...</label>
+        :class="{ 'mdc-floating-label--float-above': phrase !== '' || focused }">Search...</label>
       <i
         v-show="phrase !== ''"
         class="material-icons mdc-text-field__icon"
@@ -25,9 +25,10 @@
       <li
         class="mdc-list-item"
         data-mdc-auto-init="MDCRipple"
-        v-for="file in filter(filelist)"
+        v-for="file in filelist"
         :key="file.id"
-        @click="select(file)">
+        @click="select(file)"
+        tabindex="0">
         <span class="mdc-list-item__graphic" role="presentation">
           <i v-if="selectedId === file.id" class="material-icons" aria-hidden="true">play_circle_outline</i>
           <i v-else class="material-icons" aria-hidden="true">audiotrack</i>
@@ -63,12 +64,11 @@ export default {
       msgbus: null,
       phrase: '',
       focused: false,
-      filelist: [],
-      selectedId: 0
+      selectedId: 0,
+      filelist: []
     }
   },
   created () {
-    this.showFiles()
     this.msgbus = this.$root.msgbus
     this.msgbus.$on('position', file => {
       this.selectedId = file.id
@@ -104,20 +104,6 @@ export default {
     }
   },
   methods: {
-    filter (filelist) {
-      if (this.phrase === '') {
-        return filelist
-      }
-      return filelist.filter(file => {
-        return file.name.toLowerCase().indexOf(this.phrase.toLowerCase()) > -1
-      })
-    },
-    showFiles () {
-      let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
-      db.files.where('fid').anyOf(fidlist).limit(100).toArray(filelist => {
-        this.filelist = filelist
-      })
-    },
     select (file) {
       console.log(file.type)
       switch (file.type) {
@@ -133,21 +119,20 @@ export default {
     }
   },
   computed: {
-    floated () {
-      return this.phrase !== '' || this.focused
-    }
   },
   watch: {
     phrase (val) {
-      if (val === '') {
-        this.showFiles()
+      if (this.phrase === '') {
+        this.filelist = []
         return
       }
-      this.filelist = []
       let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
-      console.log(fidlist)
-      let regex = new RegExp(val, 'i')
-      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(100).toArray(filelist => {
+      if (fidlist.length === 0) {
+        this.filelist = []
+        return
+      }
+      let regex = new RegExp(this.phrase, 'i')
+      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(30).toArray(filelist => {
         this.filelist = filelist
       })
     }
