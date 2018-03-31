@@ -81,6 +81,7 @@
 }
 .library .mdc-card {
   margin: 15px;
+  position: relative;
 }
 .library .mdc-card .mdc-card__primary {
   padding: .5em 1em;
