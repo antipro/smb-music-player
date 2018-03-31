@@ -36,7 +36,7 @@
         <span class="mdc-list-item__text">
           {{ file.name }}
           <span class="mdc-list-item__secondary-text">
-            Length: {{ formatSize(file.length) }}
+            Size: {{ formatSize(file.length) }}
           </span>
         </span>
       </li>
