@@ -1,63 +1,66 @@
 <template>
   <div class="library">
-    <ul class="mdc-list mdc-list--two-line">
-      <li
-        class="mdc-list-item"
-        v-for="directory in directorylist"
-        :key="directory.id">
-        <span class="mdc-list-item__graphic" role="presentation">
-          <i class="material-icons" aria-hidden="true">folder</i>
-        </span>
-        <span class="mdc-list-item__text">
-          {{ directory.name }}
-          <span class="mdc-list-item__secondary-text">
-            Files: {{ directory.files }}
-          </span>
-          <span class="mdc-list-item__secondary-text">
-            Url: {{ directory.url }}
-          </span>
-        </span>
-        <div
-          class="btn-group"
-          v-show="directory.inprogress === undefined">
-          <span
-            class="mdc-list-item__meta material-icons"
-            aria-label="Refresh Directory"
+    <div
+      class="mdc-card"
+      v-for="directory in directorylist"
+      :key="directory.id">
+      <div class="mdc-card__primary">
+        <h2 class="mdc-typography--title">
+          <i class="material-icons" aria-hidden="true">folder</i> {{ directory.name }}
+        </h2>
+        <h5>Files: {{ directory.files }}</h5>
+      </div>
+      <div class="mdc-typography--body1">
+        Url: {{ directory.url }}
+      </div>
+      <div class="mdc-card__actions">
+        <div class="mdc-switch">
+          <input
+            type="checkbox"
+            class="mdc-switch__native-control"
+            v-model="directory.reachable"/>
+          <div class="mdc-switch__background">
+            <div class="mdc-switch__knob"></div>
+          </div>
+        </div>
+        <div class="mdc-card__action-icons">
+          <i
+            class="material-icons mdc-card__action mdc-card__action--icon"
+            tabindex="0"
+            role="button"
             title="Sync"
+            aria-label="Sync Directory"
             v-if="directory.reachable"
-            @click.stop="$root.updateDir(directory)">
-            sync
-          </span>
-          <span
-            class="mdc-list-item__meta material-icons"
-            aria-label="Refresh Directory"
+            @click.stop="$root.updateDir(directory)">sync</i>
+          <i
+            class="material-icons mdc-card__action mdc-card__action--icon"
+            tabindex="0"
+            role="button"
             title="Sync disabled"
-            v-else>
-            sync_disabled
-          </span>
-          <span
-            class="mdc-list-item__meta material-icons"
-            aria-label="Delete Directory"
+            v-else>sync_disabled</i>
+          <i
+            class="material-icons mdc-card__action mdc-card__action--icon"
+            tabindex="0"
+            role="button"
             title="Delete"
-            @click.stop="$root.removeDir(directory)">
-            delete
-          </span>
+            aria-label="Delete Directory"
+            @click.stop="$root.removeDir(directory)">delete</i>
         </div>
-        <div
-          role="progressbar"
-          class="mdc-linear-progress mdc-linear-progress--indeterminate"
-          v-show="directory.inprogress">
-          <div class="mdc-linear-progress__buffering-dots"></div>
-          <div class="mdc-linear-progress__buffer"></div>
-          <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-            <span class="mdc-linear-progress__bar-inner"></span>
-          </div>
-          <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-            <span class="mdc-linear-progress__bar-inner"></span>
-          </div>
+      </div>
+      <div
+        role="progressbar"
+        class="mdc-linear-progress mdc-linear-progress--indeterminate"
+        v-show="directory.inprogress">
+        <div class="mdc-linear-progress__buffering-dots"></div>
+        <div class="mdc-linear-progress__buffer"></div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+          <span class="mdc-linear-progress__bar-inner"></span>
         </div>
-      </li>
-    </ul>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+          <span class="mdc-linear-progress__bar-inner"></span>
+        </div>
+      </div>
+    </div>
     <router-link
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Add"
@@ -76,17 +79,26 @@
     bottom: 150px; right: 1.5rem;
   }
 }
-.library .mdc-list-item .mdc-linear-progress {
+.library .mdc-card {
+  margin: 15px;
+}
+.library .mdc-card .mdc-card__primary {
+  padding: .5em 1em;
+}
+.library .mdc-card .mdc-card__primary > *{
+  margin: .5em auto;
+}
+.library .mdc-card .mdc-typography--body1 {
+  padding: .5em 1em;
+}
+.library .mdc-card .mdc-switch {
+  padding: 12px
+}
+.library .mdc-card .mdc-linear-progress {
   position: absolute;
   bottom: 0;
   right: 0;
   left: 0;
-}
-.library .mdc-list-item .btn-group {
-  position: absolute; right: 0; top: 0; font-size: 48px;
-}
-.library .mdc-list-item .btn-group * {
-  font-size: 36px;
 }
 </style>
 

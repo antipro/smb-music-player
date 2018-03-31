@@ -48,12 +48,12 @@ new Vue({
       window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
           console.log(data)
-          alert('connected ' + data.networkInfo.type)
+          // alert('connected ' + data.networkInfo.type)
           this.checkOnline()
         }
         if (data.BSSID === null && data.networkInfo.state === 'DISCONNECTED' && data.wifiInfo === null) {
           console.log(data)
-          alert('disconnected ' + navigator.connection.type)
+          // alert('disconnected ' + navigator.connection.type)
           if (this.online === true) {
             this.online = false
             this.ssid = ''
@@ -64,6 +64,9 @@ new Vue({
         }
       }
     }, false)
+    if (!window.cordova) {
+      this.refreshAll(true)
+    }
   },
   methods: {
     checkOnline () {
@@ -91,6 +94,10 @@ new Vue({
       db.directories.toArray((directorylist) => {
         this.directorylist = directorylist
         this.directorylist.forEach(directory => {
+          if (directory.type === 0) {
+            Vue.set(directory, 'reachable', true)
+            return
+          }
           if (bool) {
             this.checkDir(directory)
           } else {

@@ -47,6 +47,8 @@
 @import "@material/checkbox/mdc-checkbox";
 @import "@material/dialog/mdc-dialog";
 @import "@material/linear-progress/mdc-linear-progress";
+@import "@material/card/mdc-card";
+@import "@material/switch/mdc-switch";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;
