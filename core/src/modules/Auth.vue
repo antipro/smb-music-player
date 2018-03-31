@@ -13,7 +13,7 @@
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': serverAddressFloated }">Server Address</label>
+        :class="{ 'mdc-floating-label--float-above': serverAddress !== '' || serverAddressFocused }">Server Address</label>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
     <p id="my-text-field-helper-text" class="mdc-text-field-helper-text mdc-text-field-helper-text--persistent" style="display: block;" aria-hidden="true">
@@ -31,13 +31,13 @@
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': userNameFloated }">User Name</label>
+        :class="{ 'mdc-floating-label--float-above': userName !== '' || userNameFocused }">User Name</label>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
     <div class="mdc-text-field mdc-text-field--box mdc-text-field--with-leading-icon" :class="{ 'mdc-text-field--disabled': guest }">
       <i class="material-icons mdc-text-field__icon">vpn_key</i>
       <input
-        type="text"
+        type="password"
         id="search-input"
         class="mdc-text-field__input"
         v-model="password"
@@ -46,7 +46,7 @@
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': passwordFloated }">Password</label>
+        :class="{ 'mdc-floating-label--float-above': password !== '' || passwordFocused }">Password</label>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
     <div class="mdc-form-field">
@@ -125,15 +125,6 @@ export default {
     }
   },
   computed: {
-    serverAddressFloated () {
-      return this.serverAddress !== '' || this.serverAddressFocused
-    },
-    userNameFloated () {
-      return this.userName !== '' || this.userNameFocused
-    },
-    passwordFloated () {
-      return this.password !== '' || this.passwordFocused
-    },
     validated () {
       if (this.serverAddress === '') {
         return false
