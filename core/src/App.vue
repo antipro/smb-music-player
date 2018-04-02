@@ -49,6 +49,7 @@
 @import "@material/linear-progress/mdc-linear-progress";
 @import "@material/card/mdc-card";
 @import "@material/switch/mdc-switch";
+@import "@material/slider/mdc-slider";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;

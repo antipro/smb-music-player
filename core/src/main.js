@@ -29,9 +29,9 @@ new Vue({
     online: false,
     ssid: '',
     app: null,
-    cacheLimit: 3
+    cachelimit: 3
   },
-  persist: [ 'cache' ],
+  persist: [ 'cachelimit' ],
   created () {
     this.app = this.$children[0]
   },
@@ -315,10 +315,10 @@ new Vue({
     clearCache () {
       let fileEntries = []
       let process = () => {
-        if (fileEntries.length <= this.cacheLimit) {
+        if (fileEntries.length <= this.cachelimit) {
           return
         }
-        let deleteCount = fileEntries.length - this.cacheLimit
+        let deleteCount = fileEntries.length - this.cachelimit
         while (deleteCount > 0) {
           fileEntries.shift().remove(() => console.log('cache file removed'))
           deleteCount--
