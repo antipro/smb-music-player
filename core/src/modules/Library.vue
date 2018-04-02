@@ -91,6 +91,9 @@
 .library .mdc-card .mdc-card__primary {
   padding: .5em 1em;
 }
+.library .mdc-card .mdc-card__primary .material-icons {
+  vertical-align: middle;
+}
 .library .mdc-card .mdc-card__primary > *{
   margin: .3em auto;
 }
