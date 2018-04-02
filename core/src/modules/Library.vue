@@ -28,7 +28,7 @@
         </div>
         <div
           class="mdc-card__action-icons"
-          v-show="!directory.inprogress">
+          v-show="directory.inprogress">
           <i
             class="material-icons mdc-card__action mdc-card__action--icon"
             tabindex="0"
