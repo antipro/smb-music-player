@@ -91,6 +91,13 @@
 .library .mdc-card .mdc-card__primary {
   padding: .5em 1em;
 }
+.library .mdc-card .mdc-card__primary h2 {
+  display: flex;
+  align-items: center;
+}
+.library .mdc-card .mdc-card__primary h2 .material-icons {
+  margin-right: 5px;
+}
 .library .mdc-card .mdc-card__primary .material-icons {
   vertical-align: middle;
 }
@@ -100,6 +107,7 @@
 .library .mdc-card .mdc-typography--body1 {
   padding: .3em 1em;
   word-wrap: break-word;
+  word-break: break-all;
 }
 .library .mdc-card .mdc-switch {
   padding: 12px
