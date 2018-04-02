@@ -203,10 +203,7 @@ new Vue({
       }).catch(error => {
         console.log(error)
         window.cifs.download(file.url, (res) => {
-          if (this.currentFile.url !== file.url) {
-            return
-          }
-          if (res.status === 'downloading') {
+          if (res.status === 'downloading' && this.currentFile.url === file.url) {
             this.msgbus.$emit('status', `Buffering(${res.percent})...`)
           }
           if (res.status === 'finished') {
@@ -215,6 +212,9 @@ new Vue({
               let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
               return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
             })().then((fileEntry) => {
+              if (this.currentFile.url !== file.url) {
+                return
+              }
               this.play(fileEntry.toURL())
             }).catch(error => console.error(error))
           }
@@ -259,15 +259,9 @@ new Vue({
       audioPlayer.seekTo(duration * 1000 * percent)
     },
     previous () {
-      if (!audioPlayer) {
-        return
-      }
       this.msgbus.$emit('previous')
     },
     next () {
-      if (!audioPlayer) {
-        return
-      }
       this.msgbus.$emit('next')
     },
     changeStatus (mediaStatus) {
