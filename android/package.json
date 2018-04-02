@@ -10,12 +10,13 @@
   "author": "Apache Cordova Team",
   "license": "Apache-2.0",
   "dependencies": {
-    "cordova-android": "^7.0.0",
+    "cordova-android": "^7.1.0",
     "cordova-plugin-android-wifi-manager": "git+https://github.com/kapetan/cordova-plugin-android-wifi-manager.git",
     "cordova-plugin-backbutton": "^0.3.0",
     "cordova-plugin-cifs": "file:../../cordova-plugin-cifs",
     "cordova-plugin-crosswalk-webview": "^2.4.0",
     "cordova-plugin-inappbrowser": "^2.0.2",
+    "cordova-plugin-media": "../../Sharelist/cordova-plugin-media",
     "cordova-plugin-media-forked": "file:../../Sharelist/cordova-plugin-media",
     "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-whitelist": "^1.3.3"
