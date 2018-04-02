@@ -3,10 +3,14 @@
 import './backports'
 import db from './database'
 import Vue from 'vue'
+import VuePersist from 'vue-persist'
 import App from './App'
 import router from './router'
 import { formatTime, resolveFileEntry, moveFileEntry } from './utils'
 
+Vue.use(VuePersist, {
+  name: 'persist:smbmusic'
+})
 Vue.config.productionTip = false
 
 var mediaTimer = 0
@@ -24,8 +28,10 @@ new Vue({
     mediaStatus: null,
     online: false,
     ssid: '',
-    app: null
+    app: null,
+    cacheLimit: 3
   },
+  persist: [ 'cache' ],
   created () {
     this.app = this.$children[0]
   },
@@ -36,8 +42,9 @@ new Vue({
         if (location.href.indexOf('directory') > -1) {
           this.app.showConfirm()
         } else if (location.href.endsWith('#/')) {
-          navigator.Backbutton.goHome(function () {
+          navigator.Backbutton.goHome(() => {
             console.log('go home success')
+            this.clearCache()
           }, function () {
             console.log('go home fail')
           })
@@ -209,9 +216,7 @@ new Vue({
               return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
             })().then((fileEntry) => {
               this.play(fileEntry.toURL())
-            }).catch(error => {
-              console.error(error)
-            })
+            }).catch(error => console.error(error))
           }
         }, (error) => {
           this.currentFile = null
@@ -306,6 +311,33 @@ new Vue({
         default:
           console.log('None')
       }
+    },
+    clearCache () {
+      let fileEntries = []
+      let process = () => {
+        if (fileEntries.length <= this.cacheLimit) {
+          return
+        }
+        let deleteCount = fileEntries.length - this.cacheLimit
+        while (deleteCount > 0) {
+          fileEntries.shift().remove(() => console.log('cache file removed'))
+          deleteCount--
+        }
+      }
+      resolveFileEntry(window.cordova.file.dataDirectory).then((dirEntry) => {
+        let dirReader = dirEntry.createReader()
+        let readEntries = () => {
+          dirReader.readEntries((results) => {
+            if (!results.length) {
+              process()
+            } else {
+              fileEntries = fileEntries.concat(results.filter(entry => entry.isFile && entry.name.startsWith('file_')))
+              readEntries()
+            }
+          }, error => console.error(error))
+        }
+        readEntries()
+      })
     }
   }
 })
