@@ -1,1 +1,0 @@
-../../../../../../../../../../plugins/cordova-plugin-file/src/android/AssetFilesystem.java
