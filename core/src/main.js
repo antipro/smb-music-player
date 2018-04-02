@@ -28,10 +28,6 @@ new Vue({
   },
   created () {
     this.app = this.$children[0]
-    // watch change of direcotrylist to reset search
-    this.$watch('directorylist', () => {
-      this.msgbus.$emit('reset')
-    }, { deep: true })
   },
   mounted () {
     document.addEventListener('deviceready', () => {

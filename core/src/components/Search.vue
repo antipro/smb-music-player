@@ -100,15 +100,6 @@ export default {
       }
       this.select(file)
     })
-    this.msgbus.$on('reset', () => {
-      if (this.phrase !== '') {
-        let oldphrase = this.phrase
-        this.phrase = ''
-        setTimeout(() => {
-          this.phrase = oldphrase
-        }, 100)
-      }
-    })
     if (this.$root.currentFile) {
       this.selectedId = this.$root.currentFile.id
     }
