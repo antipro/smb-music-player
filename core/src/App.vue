@@ -50,6 +50,7 @@
 @import "@material/card/mdc-card";
 @import "@material/switch/mdc-switch";
 @import "@material/slider/mdc-slider";
+@import "@material/radio/mdc-radio";
 
 $mdc-theme-primary: #d32f2f;
 $mdc-theme-primary-light: #ff6659;

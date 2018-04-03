@@ -29,9 +29,10 @@ new Vue({
     online: false,
     ssid: '',
     app: null,
-    cachelimit: 3
+    cachelimit: 3,
+    loopmode: 0
   },
-  persist: [ 'cachelimit' ],
+  persist: [ 'cachelimit', 'loopmode' ],
   mounted () {
     document.addEventListener('deviceready', () => {
       this.checkOnline()
@@ -40,9 +41,8 @@ new Vue({
           this.$refs.app.showConfirm()
         } else if (location.href.endsWith('#/')) {
           navigator.Backbutton.goHome(() => {
-            console.log('go home success')
             this.clearCache()
-          }, function () {
+          }, () => {
             console.log('go home fail')
           })
         } else {
@@ -51,12 +51,12 @@ new Vue({
       }, false)
       window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
-          console.log(data)
+          // console.log(data)
           // alert('connected ' + data.networkInfo.type)
           this.checkOnline()
         }
         if (data.BSSID === null && data.networkInfo.state === 'DISCONNECTED' && data.wifiInfo === null) {
-          console.log(data)
+          // console.log(data)
           // alert('disconnected ' + navigator.connection.type)
           if (this.online === true) {
             this.online = false

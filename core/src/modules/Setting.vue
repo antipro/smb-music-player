@@ -10,24 +10,56 @@
       aria-valuemax="100"
       :aria-valuenow="$root.cachelimit"
       aria-label="Select Value">
-    <div class="mdc-slider__track-container">
-      <div class="mdc-slider__track"></div>
-    </div>
-    <div class="mdc-slider__thumb-container">
-      <div class="mdc-slider__pin">
-        <span class="mdc-slider__pin-value-marker"></span>
+      <div class="mdc-slider__track-container">
+        <div class="mdc-slider__track"></div>
       </div>
-      <svg class="mdc-slider__thumb" width="21" height="21">
-        <circle cx="10.5" cy="10.5" r="7.875"></circle>
-      </svg>
-      <div class="mdc-slider__focus-ring"></div>
+      <div class="mdc-slider__thumb-container">
+        <div class="mdc-slider__pin">
+          <span class="mdc-slider__pin-value-marker"></span>
+        </div>
+        <svg class="mdc-slider__thumb" width="21" height="21">
+          <circle cx="10.5" cy="10.5" r="7.875"></circle>
+        </svg>
+        <div class="mdc-slider__focus-ring"></div>
+      </div>
     </div>
-  </div>
+    <h3>Loop Mode</h3>
+    <div class="mdc-form-field">
+      <div class="mdc-radio">
+        <input class="mdc-radio__native-control" type="radio" id="loop_1" value="0" v-model="$root.loopmode">
+        <div class="mdc-radio__background">
+          <div class="mdc-radio__outer-circle"></div>
+          <div class="mdc-radio__inner-circle"></div>
+        </div>
+      </div>
+      <label for="loop_1">No Loop</label>
+    </div>
+    <div class="mdc-form-field">
+      <div class="mdc-radio">
+        <input class="mdc-radio__native-control" type="radio" id="loop_2" value="1" v-model="$root.loopmode">
+        <div class="mdc-radio__background">
+          <div class="mdc-radio__outer-circle"></div>
+          <div class="mdc-radio__inner-circle"></div>
+        </div>
+      </div>
+      <label for="loop_2">One Loop</label>
+    </div>
+    <div class="mdc-form-field">
+      <div class="mdc-radio">
+        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="2" v-model="$root.loopmode">
+        <div class="mdc-radio__background">
+          <div class="mdc-radio__outer-circle"></div>
+          <div class="mdc-radio__inner-circle"></div>
+        </div>
+      </div>
+      <label for="loop_3">Playlist Loop</label>
+    </div>
   </div>
 </template>
 
 <style>
 .setting { padding: 15px; }
+.setting .mdc-form-field { display: flex; }
 </style>
 
 <script>
