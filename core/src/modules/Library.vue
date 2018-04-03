@@ -17,7 +17,8 @@
         Url: {{ transform(directory.url) }}
       </div>
       <div class="mdc-card__actions">
-        <div class="mdc-switch">
+        <div
+          class="mdc-switch">
           <input
             type="checkbox"
             class="mdc-switch__native-control"
@@ -55,7 +56,7 @@
       <div
         role="progressbar"
         class="mdc-linear-progress mdc-linear-progress--indeterminate"
-        v-show="directory.inprogress">
+        v-show="directory.inprogress === true">
         <div class="mdc-linear-progress__buffering-dots"></div>
         <div class="mdc-linear-progress__buffer"></div>
         <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">

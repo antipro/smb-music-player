@@ -95,64 +95,65 @@ new Vue({
       })
     },
     refreshAll (bool) {
-      db.directories.toArray((directorylist) => {
+      db.directories.toArray().then(directorylist => {
         this.directorylist = directorylist
-        this.directorylist.forEach(directory => {
+        return Promise.all(this.directorylist.map(directory => {
+          Vue.delete(directory, 'inprogress')
           if (directory.type === 0) {
             Vue.set(directory, 'reachable', true)
-            return
+            return Promise.resolve()
           }
           if (bool) {
-            this.checkDir(directory)
+            return this.checkDir(directory)
           } else {
             Vue.set(directory, 'reachable', false)
+            return Promise.resolve()
           }
-        })
-      })
-    },
-    removeDir (directory) {
-      Vue.set(directory, 'inprogress', true)
-      db.directories.delete(directory.id).then(() => {
-        return db.files.where('fid').equals(directory.id).delete()
+        }))
       }).then(() => {
-        this.directorylist = this.directorylist.filter(d => {
-          return d.id !== directory.id
-        })
-        Vue.delete(directory, 'inprogress')
+        console.log('RefreshAll Finished')
       }).catch(error => {
-        Vue.delete(directory, 'inprogress')
-        console.error(error)
-        this.$refs.app.showMsg('Error')
+        console.log('RefreshAll Interrupted', error)
       })
     },
     checkDir (directory) {
       if (!window.cifs) {
-        return
+        return Promise.reject(new Error('window.cifs undefined'))
       }
-      Vue.set(directory, 'reachable', false)
-      window.cifs.exist(directory.url, bool => {
+      return new Promise((resolve, reject) => {
+        window.cifs.exist(directory.url, bool => {
+          resolve(bool)
+        }, error => {
+          reject(error)
+        })
+      }).then(bool => {
         if (!bool) {
-          directory.reachable = false
-          return
+          Vue.set(directory, 'reachable', false)
+          return Promise.resolve()
         }
-        directory.reachable = true
+        Vue.set(directory, 'reachable', true)
         if (directory.lastupdate === null) {
-          this.updateDir(directory)
+          return this.updateDir(directory)
         }
-      }, error => {
-        directory.reachable = false
+        return Promise.resolve()
+      }).catch(error => {
         console.error(error)
+        Vue.set(directory, 'reachable', false)
       })
     },
     updateDir (directory) {
       if (!window.cifs) {
-        return
+        return Promise.reject(new Error('window.cifs undefined'))
       }
       Vue.set(directory, 'inprogress', true)
-      db.files.where('fid').equals(directory.id).delete().then(() => {
-        directory.files = 0
-        window.cifs.getfiles(directory.url, resp => {
-          if (resp.status === 'processing') {
+      return db.files.where('fid').equals(directory.id).delete().then(() => {
+        return new Promise((resolve, reject) => {
+          directory.files = 0
+          window.cifs.getfiles(directory.url, resp => {
+            if (resp.status === 'finished') {
+              resolve()
+              return
+            }
             let fileCount = 0
             for (const file of resp.files) {
               if (!file.name.match(/(mp3|m4a|flac|wav|mp4)$/i)) {
@@ -168,20 +169,39 @@ new Vue({
               fileCount++
             }
             directory.files += fileCount
-          } else if (resp.status === 'finished') {
-            Vue.delete(directory, 'inprogress')
-            directory.lastupdate = new Date()
-            db.directories.put(directory)
-          }
-        }, error => {
-          Vue.delete(directory, 'inprogress')
-          console.error(error)
-          this.$refs.app.showMsg('CIFS Error')
+          }, error => {
+            reject(error)
+          })
         })
+      }).then(() => {
+        directory.lastupdate = new Date()
+        db.directories.put({
+          name: directory.name,
+          url: directory.url,
+          files: directory.files,
+          type: directory.type,
+          lastupdate: new Date()
+        }, directory.id)
+        Vue.delete(directory, 'inprogress')
+      }).catch(error => {
+        console.error(error)
+        Vue.delete(directory, 'inprogress')
+        this.$refs.app.showMsg(error)
+      })
+    },
+    removeDir (directory) {
+      Vue.set(directory, 'inprogress', true)
+      db.directories.delete(directory.id).then(() => {
+        return db.files.where('fid').equals(directory.id).delete()
+      }).then(() => {
+        this.directorylist = this.directorylist.filter(d => {
+          return d.id !== directory.id
+        })
+        Vue.delete(directory, 'inprogress')
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
         console.error(error)
-        this.$refs.app.showMsg('Update Error')
+        this.$refs.app.showMsg('Error')
       })
     },
     playSmbFile (file) {
