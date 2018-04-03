@@ -30,7 +30,7 @@
     <plugin name="cordova-plugin-backbutton" spec="^0.3.0" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="cordova-plugin-android-wifi-manager" spec="https://github.com/kapetan/cordova-plugin-android-wifi-manager.git" />
-    <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
     <plugin name="cordova-plugin-media" spec="../../Sharelist/cordova-plugin-media" />
+    <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
     <engine name="android" spec="^7.1.0" />
 </widget>

@@ -20,7 +20,7 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>',
+  template: '<App ref="app"/>',
   data: {
     directorylist: [],
     currentFile: null,
@@ -32,15 +32,12 @@ new Vue({
     cachelimit: 3
   },
   persist: [ 'cachelimit' ],
-  created () {
-    this.app = this.$children[0]
-  },
   mounted () {
     document.addEventListener('deviceready', () => {
       this.checkOnline()
       document.addEventListener('backbutton', evt => {
         if (location.href.indexOf('directory') > -1) {
-          this.app.showConfirm()
+          this.$refs.app.showConfirm()
         } else if (location.href.endsWith('#/')) {
           navigator.Backbutton.goHome(() => {
             console.log('go home success')
@@ -125,7 +122,7 @@ new Vue({
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
         console.error(error)
-        this.app.showMsg('Error')
+        this.$refs.app.showMsg('Error')
       })
     },
     checkDir (directory) {
@@ -179,12 +176,12 @@ new Vue({
         }, error => {
           Vue.delete(directory, 'inprogress')
           console.error(error)
-          this.app.showMsg('CIFS Error')
+          this.$refs.app.showMsg('CIFS Error')
         })
       }).catch(error => {
         Vue.delete(directory, 'inprogress')
         console.error(error)
-        this.app.showMsg('Update Error')
+        this.$refs.app.showMsg('Update Error')
       })
     },
     playSmbFile (file) {
@@ -221,7 +218,7 @@ new Vue({
         }, (error) => {
           this.currentFile = null
           console.error(error)
-          this.app.showMsg('Download Error')
+          this.$refs.app.showMsg('Download Error')
         })
       })
     },
@@ -230,7 +227,7 @@ new Vue({
         this.msgbus.$emit('toggleplay', false)
       }, mediaError => {
         console.error(mediaError)
-        this.app.showMsg('Play Error')
+        this.$refs.app.showMsg('Play Error')
       }, mediaStatus => {
         this.changeStatus(mediaStatus)
       })
@@ -287,7 +284,7 @@ new Vue({
               this.msgbus.$emit('status', formatTime(position) + '/' + formatTime(duration))
             }, error => {
               console.log(error)
-              this.app.showMsg('Position Error')
+              this.$refs.app.showMsg('Position Error')
             })
           }, 1000)
           break
