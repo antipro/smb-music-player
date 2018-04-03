@@ -119,7 +119,6 @@ export default {
       switch (file.type) {
         case 0:
           // TODO play localhost music just for test
-          this.$root.play(file.url)
           break
         case 1:
           // TODO play music from sdcard
