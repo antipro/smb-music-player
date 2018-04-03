@@ -69,6 +69,7 @@ export default {
       filelist: []
     }
   },
+  persist: [ 'phrase' ],
   created () {
     this.msgbus = this.$root.msgbus
     this.msgbus.$on('position', file => {
@@ -99,6 +100,13 @@ export default {
         return
       }
       this.select(file)
+    })
+    this.msgbus.$on('reset', () => {
+      let bak = this.phrase
+      this.phrase = ''
+      setTimeout(() => {
+        this.phrase = bak
+      }, 500)
     })
     if (this.$root.currentFile) {
       this.selectedId = this.$root.currentFile.id

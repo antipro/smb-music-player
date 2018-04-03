@@ -112,6 +112,7 @@ new Vue({
         }))
       }).then(() => {
         console.log('RefreshAll Finished')
+        this.msgbus.$emit('reset')
       }).catch(error => {
         console.log('RefreshAll Interrupted', error)
       })
@@ -174,14 +175,14 @@ new Vue({
           })
         })
       }).then(() => {
-        directory.lastupdate = new Date()
         db.directories.put({
+          id: directory.id,
           name: directory.name,
           url: directory.url,
           files: directory.files,
           type: directory.type,
           lastupdate: new Date()
-        }, directory.id)
+        })
         Vue.delete(directory, 'inprogress')
       }).catch(error => {
         console.error(error)
