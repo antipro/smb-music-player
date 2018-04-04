@@ -68,9 +68,7 @@ function resolveFileEntry (url) {
   return new Promise(function (resolve, reject) {
     window.resolveLocalFileSystemURL(url, fileEntry => {
       resolve(fileEntry)
-    }, error => {
-      reject(error)
-    })
+    }, reject)
   })
 }
 
@@ -85,12 +83,39 @@ function moveFileEntry (fileEntry, dirEntry, newName) {
   return new Promise(function (resolve, reject) {
     fileEntry.moveTo(dirEntry, newName, newFileEntry => {
       resolve(newFileEntry)
-    }, error => {
-      reject(error)
-    })
+    }, reject)
+  })
+}
+/**
+ * check if file exist, return url or null
+ * @param {string} dirUrl
+ * @param {string} fileName
+ * @returns Promise
+ */
+function resolveURL (dirUrl, fileName) {
+  return new Promise(function (resolve, reject) {
+    window.resolveLocalFileSystemURL(dirUrl, dirEntry => {
+      let dirReader = dirEntry.createReader()
+      let readEntries = () => {
+        dirReader.readEntries((results) => {
+          if (!results.length) {
+            resolve(null)
+          } else {
+            for (const entry of results) {
+              if (entry.name === fileName) {
+                resolve(entry.toURL())
+                return
+              }
+            }
+            readEntries()
+          }
+        }, reject)
+      }
+      readEntries()
+    }, reject)
   })
 }
 
 export {
-  formatTime, formatSize, resolveFileEntry, moveFileEntry
+  formatTime, formatSize, resolveFileEntry, moveFileEntry, resolveURL
 }

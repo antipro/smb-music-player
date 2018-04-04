@@ -6,7 +6,7 @@ import Vue from 'vue'
 import VuePersist from 'vue-persist'
 import App from './App'
 import router from './router'
-import { formatTime, resolveFileEntry, moveFileEntry } from './utils'
+import { formatTime, resolveFileEntry, moveFileEntry, resolveURL } from './utils'
 
 Vue.use(VuePersist, {
   name: 'persist:smbmusic'
@@ -216,10 +216,11 @@ new Vue({
       this.currentFile = file
       this.msgbus.$emit('position', file)
       audioPlayer = null
-      resolveFileEntry(window.cordova.file.dataDirectory + 'file_' + file.id).then(fileEntry => {
-        this.play(fileEntry.toURL())
-      }).catch(error => {
-        console.log(error)
+      resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+        if (url) {
+          this.play(url)
+          return
+        }
         window.cifs.download(file.url, (res) => {
           if (res.status === 'downloading' && this.currentFile.url === file.url) {
             this.msgbus.$emit('status', `Buffering(${res.percent})...`)
@@ -241,7 +242,7 @@ new Vue({
           console.error(error)
           this.$refs.app.showMsg('Download Error')
         })
-      })
+      }).catch(console.error)
     },
     play (url) {
       audioPlayer = new window.Media(url, () => {
