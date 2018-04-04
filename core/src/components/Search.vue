@@ -56,7 +56,7 @@
 
 <script>
 import db from '../database'
-import { formatSize, resolveFileEntry, moveFileEntry, resolveURL } from '../utils'
+import { formatSize } from '../utils'
 
 export default {
   name: 'search',
@@ -112,7 +112,7 @@ export default {
       if (!file) {
         return
       }
-      this.preload(file)
+      this.$root.load(file)
     })
     this.msgbus.$on('reset', () => {
       let bak = this.phrase
@@ -139,22 +139,6 @@ export default {
         case 2:
           this.$root.playSmbFile(file)
       }
-    },
-    preload (file) {
-      resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
-        if (url) {
-          return
-        }
-        window.cifs.download(file.url, (res) => {
-          if (res.status === 'finished') {
-            (async () => {
-              let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
-              let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
-              return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
-            })().catch(console.error)
-          }
-        })
-      }).catch(console.error)
     }
   },
   watch: {

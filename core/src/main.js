@@ -13,8 +13,15 @@ Vue.use(VuePersist, {
 })
 Vue.config.productionTip = false
 
+/**
+ * Socket object collection
+ * user.id:array[socket]
+ */
+const promiseStore = {}
+
 var mediaTimer = 0
 var audioPlayer = null
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -216,13 +223,28 @@ new Vue({
       this.currentFile = file
       this.msgbus.$emit('position', file)
       audioPlayer = null
-      resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+      this.load(file).then(url => {
+        console.log(url)
+        if (this.currentFile.id === file.id) {
+          this.play(url)
+          this.msgbus.$emit('preload')
+        }
+      }).catch(error => {
+        console.error(error)
+        this.$refs.app.showMsg(error)
+      })
+    },
+    load (file) {
+      if (promiseStore[file.id]) {
+        return promiseStore[file.id]
+      }
+      let promise = resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
         if (url) {
           return Promise.resolve(url)
         }
         return new Promise((resolve, reject) => {
           window.cifs.download(file.url, (res) => {
-            if (res.status === 'downloading' && this.currentFile.url === file.url) {
+            if (res.status === 'downloading' && this.currentFile.id === file.id) {
               this.msgbus.$emit('status', `Buffering(${res.percent})...`)
             }
             if (res.status === 'finished') {
@@ -239,26 +261,33 @@ new Vue({
           })()
         }).then((fileEntry) => {
           console.log('fetch url', fileEntry)
-          if (this.currentFile.url !== file.url) {
-            return Promise.resolve()
-          }
+          delete promiseStore[file.id]
           return Promise.resolve(fileEntry.toURL())
         })
-      }).then(url => {
-        console.log(url)
-        if (url) {
-          this.play(url)
-          // this.msgbus.$emit('preload')
-        }
       }).catch(error => {
         console.error(error)
-        this.$refs.app.showMsg(error)
+        delete promiseStore[file.id]
       })
+      promiseStore[file.id] = promise
+      return promise
     },
     play (url) {
       audioPlayer = new window.Media(url, () => {
         this.msgbus.$emit('toggleplay', false)
+        if (this.loopmode === 2) { // playlist loop
+          setTimeout(() => {
+            this.msgbus.$emit('next')
+          }, 500)
+        }
+        if (this.loopmode === 1) { // one loop
+          setTimeout(() => {
+            this.play(this.currentFile)
+          }, 500)
+        }
       }, mediaError => {
+        if (mediaError.code === 0) {
+          return
+        }
         console.error(mediaError)
         this.$refs.app.showMsg('Play Error')
       }, mediaStatus => {

@@ -26,7 +26,7 @@
     <h3>Loop Mode</h3>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_1" value="0" v-model="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_1" value="0" v-model.number="$root.loopmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
@@ -36,7 +36,7 @@
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_2" value="1" v-model="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_2" value="1" v-model.number="$root.loopmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
@@ -46,7 +46,7 @@
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="2" v-model="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="2" v-model.number="$root.loopmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
