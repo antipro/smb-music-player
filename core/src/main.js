@@ -218,31 +218,42 @@ new Vue({
       audioPlayer = null
       resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
         if (url) {
-          this.play(url)
-          return
+          return Promise.resolve(url)
         }
-        window.cifs.download(file.url, (res) => {
-          if (res.status === 'downloading' && this.currentFile.url === file.url) {
-            this.msgbus.$emit('status', `Buffering(${res.percent})...`)
+        return new Promise((resolve, reject) => {
+          window.cifs.download(file.url, (res) => {
+            if (res.status === 'downloading' && this.currentFile.url === file.url) {
+              this.msgbus.$emit('status', `Buffering(${res.percent})...`)
+            }
+            if (res.status === 'finished') {
+              console.log('finished', res.filename)
+              resolve(res.filename)
+            }
+          }, reject)
+        }).then(filename => {
+          console.log('move', filename)
+          return (async () => {
+            let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
+            let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + filename)
+            return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
+          })()
+        }).then((fileEntry) => {
+          console.log('fetch url', fileEntry)
+          if (this.currentFile.url !== file.url) {
+            return Promise.resolve()
           }
-          if (res.status === 'finished') {
-            (async () => {
-              let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
-              let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + res.filename)
-              return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
-            })().then((fileEntry) => {
-              if (this.currentFile.url !== file.url) {
-                return
-              }
-              this.play(fileEntry.toURL())
-            }).catch(error => console.error(error))
-          }
-        }, (error) => {
-          this.currentFile = null
-          console.error(error)
-          this.$refs.app.showMsg('Download Error')
+          return Promise.resolve(fileEntry.toURL())
         })
-      }).catch(console.error)
+      }).then(url => {
+        console.log(url)
+        if (url) {
+          this.play(url)
+          // this.msgbus.$emit('preload')
+        }
+      }).catch(error => {
+        console.error(error)
+        this.$refs.app.showMsg(error)
+      })
     },
     play (url) {
       audioPlayer = new window.Media(url, () => {
