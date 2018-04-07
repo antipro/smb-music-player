@@ -52,11 +52,11 @@
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
-      <label for="loop_3">Playlist Loop</label>
+      <label for="loop_4">Playlist Loop</label>
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="3" v-model.number="$root.playmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_4" value="3" v-model.number="$root.playmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
