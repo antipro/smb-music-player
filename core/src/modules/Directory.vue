@@ -153,7 +153,7 @@ export default {
       if (!this.selectedDirectory.url) {
         return
       }
-      this.promptTitle = 'Please give a name:'
+      this.promptTitle = 'Name for directory'
     },
     prompted (val) {
       this.promptTitle = ''
