@@ -72,7 +72,7 @@ export default {
   persist: [ 'phrase' ],
   created () {
     this.msgbus = this.$root.msgbus
-    this.msgbus.$off([ 'position', 'next', 'previous', 'preload', 'reset' ])
+    this.msgbus.$off([ 'position', 'next', 'previous', 'preload', 'reset', 'random' ])
     this.msgbus.$on('position', file => {
       this.selectedId = file.id
     })
@@ -88,6 +88,16 @@ export default {
         return
       }
       console.log('next', file)
+      this.select(file)
+    })
+    this.msgbus.$on('random', () => {
+      let length = this.filelist.length
+      let idx = parseInt(Math.random() * length)
+      let file = this.filelist[idx]
+      if (!file) {
+        return
+      }
+      console.log('random', file)
       this.select(file)
     })
     this.msgbus.$on('previous', () => {

@@ -37,10 +37,10 @@ new Vue({
     ssid: '',
     app: null,
     cachelimit: 3,
-    loopmode: 0,
+    playmode: 0,
     manual: true
   },
-  persist: [ 'cachelimit', 'loopmode' ],
+  persist: [ 'cachelimit', 'playmode' ],
   mounted () {
     document.addEventListener('deviceready', () => {
       this.checkOnline()
@@ -282,12 +282,17 @@ new Vue({
           return
         }
         console.log('natural end')
-        if (this.loopmode === 2) { // playlist loop
+        if (this.playmode === 3) { // random
+          setTimeout(() => {
+            this.msgbus.$emit('random')
+          }, 500)
+        }
+        if (this.playmode === 2) { // playlist loop
           setTimeout(() => {
             this.msgbus.$emit('next')
           }, 500)
         }
-        if (this.loopmode === 1) { // one loop
+        if (this.playmode === 1) { // one loop
           setTimeout(() => {
             this.play(this.currentFile)
           }, 500)

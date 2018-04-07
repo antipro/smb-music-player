@@ -23,10 +23,10 @@
         <div class="mdc-slider__focus-ring"></div>
       </div>
     </div>
-    <h3>Loop Mode</h3>
+    <h3>Play Mode</h3>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_1" value="0" v-model.number="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_1" value="0" v-model.number="$root.playmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
@@ -36,7 +36,7 @@
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_2" value="1" v-model.number="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_2" value="1" v-model.number="$root.playmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
@@ -46,13 +46,23 @@
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
-        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="2" v-model.number="$root.loopmode">
+        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="2" v-model.number="$root.playmode">
         <div class="mdc-radio__background">
           <div class="mdc-radio__outer-circle"></div>
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
       <label for="loop_3">Playlist Loop</label>
+    </div>
+    <div class="mdc-form-field">
+      <div class="mdc-radio">
+        <input class="mdc-radio__native-control" type="radio" id="loop_3" value="3" v-model.number="$root.playmode">
+        <div class="mdc-radio__background">
+          <div class="mdc-radio__outer-circle"></div>
+          <div class="mdc-radio__inner-circle"></div>
+        </div>
+      </div>
+      <label for="loop_3">Random</label>
     </div>
   </div>
 </template>
