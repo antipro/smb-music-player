@@ -4,14 +4,14 @@
       <i class="material-icons mdc-text-field__icon">storage</i>
       <input
         type="text"
-        id="search-input"
+        id="server-address-input"
         class="mdc-text-field__input"
         required
         v-model="serverAddress"
         @focus="serverAddressFocused = true"
         @blur="serverAddressFocused = false">
       <label
-        for="search-input"
+        for="server-address-input"
         class="mdc-floating-label"
         :class="{ 'mdc-floating-label--float-above': serverAddress !== '' || serverAddressFocused }">Server Address</label>
       <div class="mdc-text-field__bottom-line"></div>
@@ -23,13 +23,13 @@
       <i class="material-icons mdc-text-field__icon">account_box</i>
       <input
         type="text"
-        id="search-input"
+        id="username-input"
         class="mdc-text-field__input"
         v-model="userName"
         @focus="userNameFocused = true"
         @blur="userNameFocused = false">
       <label
-        for="search-input"
+        for="username-input"
         class="mdc-floating-label"
         :class="{ 'mdc-floating-label--float-above': userName !== '' || userNameFocused }">User Name</label>
       <div class="mdc-text-field__bottom-line"></div>
@@ -38,13 +38,13 @@
       <i class="material-icons mdc-text-field__icon">vpn_key</i>
       <input
         type="password"
-        id="search-input"
+        id="password-input"
         class="mdc-text-field__input"
         v-model="password"
         @focus="passwordFocused = true"
         @blur="passwordFocused = false">
       <label
-        for="search-input"
+        for="password-input"
         class="mdc-floating-label"
         :class="{ 'mdc-floating-label--float-above': password !== '' || passwordFocused }">Password</label>
       <div class="mdc-text-field__bottom-line"></div>
