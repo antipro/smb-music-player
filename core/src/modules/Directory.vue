@@ -40,6 +40,7 @@
       @click="selectDir">
       <span class="mdc-fab__icon">done</span>
     </button>
+    <prompt ref="promptdlg" :title="promptTitle" @prompt="prompted"></prompt>
   </div>
 </template>
 
@@ -60,6 +61,7 @@
 
 <script>
 import db from '../database'
+import Prompt from '@/components/Prompt'
 
 const TOUCHDURATION = 500
 var timer = 0
@@ -70,7 +72,8 @@ export default {
       currentUrl: '',
       parentUrlStack: [],
       directorylist: [],
-      selectedDirectory: {}
+      selectedDirectory: {},
+      promptTitle: ''
     }
   },
   created () {
@@ -150,8 +153,15 @@ export default {
       if (!this.selectedDirectory.url) {
         return
       }
+      this.promptTitle = 'Please give a name:'
+    },
+    prompted (val) {
+      this.promptTitle = ''
+      if (!val) {
+        return
+      }
       let directory = {
-        name: this.selectedDirectory.name,
+        name: val,
         url: this.selectedDirectory.url,
         files: 0,
         type: 2,
@@ -164,6 +174,9 @@ export default {
       })
       history.go(-1)
     }
+  },
+  components: {
+    Prompt
   }
 }
 </script>
