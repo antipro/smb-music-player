@@ -37,7 +37,8 @@ new Vue({
     ssid: '',
     app: null,
     cachelimit: 3,
-    loopmode: 0
+    loopmode: 0,
+    manual: true
   },
   persist: [ 'cachelimit', 'loopmode' ],
   mounted () {
@@ -216,6 +217,7 @@ new Vue({
       if (!window.cifs) {
         return
       }
+      this.manual = true
       if (audioPlayer) {
         audioPlayer.stop()
         audioPlayer.release()
@@ -240,6 +242,7 @@ new Vue({
       }
       let promise = resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
         if (url) {
+          delete promiseStore[file.id]
           return Promise.resolve(url)
         }
         return new Promise((resolve, reject) => {
@@ -274,6 +277,11 @@ new Vue({
     play (url) {
       audioPlayer = new window.Media(url, () => {
         this.msgbus.$emit('toggleplay', false)
+        if (this.manual) {
+          console.log('manual end')
+          return
+        }
+        console.log('natural end')
         if (this.loopmode === 2) { // playlist loop
           setTimeout(() => {
             this.msgbus.$emit('next')
@@ -328,6 +336,7 @@ new Vue({
       switch (mediaStatus) {
         case window.Media.MEDIA_STARTING:
           console.log('starting')
+          this.manual = false
           break
         case window.Media.MEDIA_RUNNING:
           console.log('running')
@@ -345,7 +354,7 @@ new Vue({
               this.msgbus.$emit('progress', `scaleX(${percent})`)
               this.msgbus.$emit('status', formatTime(position) + '/' + formatTime(duration))
             }, error => {
-              console.log(error)
+              console.error(error)
               this.$refs.app.showMsg('Position Error')
             })
           }, 1000)

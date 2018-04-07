@@ -83,6 +83,7 @@ export default {
   },
   created () {
     this.msgbus = this.$root.msgbus
+    this.msgbus.$off([ 'toggleplay', 'progress', 'status' ])
     this.msgbus.$on('toggleplay', (bool) => {
       this.playing = bool
     })

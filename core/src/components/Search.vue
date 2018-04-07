@@ -72,6 +72,7 @@ export default {
   persist: [ 'phrase' ],
   created () {
     this.msgbus = this.$root.msgbus
+    this.msgbus.$off([ 'position', 'next', 'previous', 'preload', 'reset' ])
     this.msgbus.$on('position', file => {
       this.selectedId = file.id
     })
@@ -86,6 +87,7 @@ export default {
       if (!file) {
         return
       }
+      console.log('next', file)
       this.select(file)
     })
     this.msgbus.$on('previous', () => {
@@ -99,6 +101,7 @@ export default {
       if (!file) {
         return
       }
+      console.log('previous', file)
       this.select(file)
     })
     this.msgbus.$on('preload', () => {
@@ -128,7 +131,6 @@ export default {
   methods: {
     formatSize: formatSize,
     select (file) {
-      console.log(file.type)
       switch (file.type) {
         case 0:
           // TODO play localhost music just for test
