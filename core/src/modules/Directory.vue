@@ -40,6 +40,7 @@
       @click="selectDir">
       <span class="mdc-fab__icon">done</span>
     </button>
+    <confirm ref="confirmdlg" :title="confirmTitle" @confirm="confirmed"></confirm>
     <prompt ref="promptdlg" :title="promptTitle" @prompt="prompted"></prompt>
   </div>
 </template>
@@ -61,6 +62,7 @@
 
 <script>
 import db from '../database'
+import Confirm from '@/components/Confirm'
 import Prompt from '@/components/Prompt'
 
 const TOUCHDURATION = 500
@@ -73,6 +75,7 @@ export default {
       parentUrlStack: [],
       directorylist: [],
       selectedDirectory: {},
+      confirmTitle: '',
       promptTitle: ''
     }
   },
@@ -104,7 +107,16 @@ export default {
       }]
     }
   },
+  mounted () {
+    document.addEventListener('backbutton', this.confirm, false)
+  },
+  beforeDestroy () {
+    document.removeEventListener('backbutton', this.confirm, false)
+  },
   methods: {
+    confirm (evt) {
+      this.showConfirm()
+    },
     openDir (url) {
       this.selectedDirectory = {}
       this.parentUrlStack.push(this.currentUrl)
@@ -149,6 +161,15 @@ export default {
     longtouch (directory) {
       this.selectedDirectory = directory
     },
+    showConfirm () {
+      this.confirmTitle = 'Exit without save?'
+    },
+    confirmed (bool) {
+      this.confirmTitle = ''
+      if (bool) {
+        history.back()
+      }
+    },
     selectDir () {
       if (!this.selectedDirectory.url) {
         return
@@ -172,11 +193,11 @@ export default {
         this.$root.directorylist.push(directory)
         this.$root.checkDir(directory)
       })
-      history.go(-1)
+      history.back()
     }
   },
   components: {
-    Prompt
+    Prompt, Confirm
   }
 }
 </script>

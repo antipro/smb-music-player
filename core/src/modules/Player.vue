@@ -53,10 +53,23 @@ export default {
   created () {
     this.$parent.title = 'Player'
   },
+  mounted () {
+    document.addEventListener('backbutton', this.backtoHome, false)
+  },
+  beforeDestroy () {
+    document.removeEventListener('backbutton', this.backtoHome, false)
+  },
   updated () {
     mdcAutoInit()
   },
   methods: {
+    backtoHome (evt) {
+      navigator.Backbutton.goHome(() => {
+        this.$root.clearCache()
+      }, () => {
+        console.log('go home fail')
+      })
+    },
     toggleMic () {
       this.listening = !this.listening
     }

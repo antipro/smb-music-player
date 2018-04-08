@@ -33,7 +33,6 @@
     </section>
 
     <aside class='toast-view js-toast-view' :class="{ 'toast-view--visible': message }">{{ message }}</aside>
-    <confirm ref="confirmdlg" :title="confirmTitle" @confirm="confirmed"></confirm>
   </div>
 </template>
 <style src='./assets/appshell.css'></style>
@@ -67,11 +66,7 @@ $mdc-theme-background: #ffffff;
 <script>
 import { MDCRipple } from '@material/ripple'
 import mdcAutoInit from '@material/auto-init'
-import Confirm from '@/components/Confirm'
 
-let resp = () => {
-  console.log('Nothing.')
-}
 export default {
   name: 'App',
   data () {
@@ -79,8 +74,7 @@ export default {
       title: '',
       menuVisible: false,
       transform: 'translateX(-102%)',
-      message: '',
-      confirmTitle: ''
+      message: ''
     }
   },
   created () {
@@ -101,22 +95,7 @@ export default {
       setTimeout(() => {
         this.message = ''
       }, 3000)
-    },
-    showConfirm () {
-      this.confirmTitle = 'Exit without save?'
-      resp = (bool) => {
-        this.confirmTitle = ''
-        if (bool) {
-          history.back()
-        }
-      }
-    },
-    confirmed (bool) {
-      resp(bool)
     }
-  },
-  components: {
-    Confirm
   }
 }
 </script>

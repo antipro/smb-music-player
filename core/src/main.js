@@ -44,19 +44,6 @@ new Vue({
   mounted () {
     document.addEventListener('deviceready', () => {
       this.checkOnline()
-      document.addEventListener('backbutton', evt => {
-        if (location.href.indexOf('directory') > -1) {
-          this.$refs.app.showConfirm()
-        } else if (location.href.endsWith('#/')) {
-          navigator.Backbutton.goHome(() => {
-            this.clearCache()
-          }, () => {
-            console.log('go home fail')
-          })
-        } else {
-          history.back()
-        }
-      }, false)
       window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
           // console.log(data)
