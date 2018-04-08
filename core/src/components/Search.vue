@@ -83,6 +83,9 @@ export default {
       if (idx === undefined) {
         return
       }
+      if (idx + 1 === this.filelist.length) {
+        idx = -1
+      }
       let file = this.filelist[++idx]
       if (!file) {
         return
@@ -106,6 +109,9 @@ export default {
       })
       if (idx === undefined) {
         return
+      }
+      if (idx === 0) {
+        idx = this.filelist.length
       }
       let file = this.filelist[--idx]
       if (!file) {
