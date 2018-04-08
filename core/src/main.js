@@ -44,6 +44,7 @@ new Vue({
   persist: [ 'cachelimit', 'playmode' ],
   mounted () {
     document.addEventListener('deviceready', () => {
+      window.StatusBar.backgroundColorByHexString('#ff6659')
       this.checkOnline()
       window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {

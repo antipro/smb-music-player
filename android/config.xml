@@ -32,5 +32,6 @@
     <plugin name="cordova-plugin-android-wifi-manager" spec="https://github.com/kapetan/cordova-plugin-android-wifi-manager.git" />
     <plugin name="cordova-plugin-media" spec="../../Sharelist/cordova-plugin-media" />
     <plugin name="cordova-plugin-cifs" spec="../../cordova-plugin-cifs" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.1" />
     <engine name="android" spec="^7.1.0" />
 </widget>
