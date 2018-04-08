@@ -67,6 +67,7 @@
 }
 .control .info-bar .message {
   overflow: hidden;
+  margin: 3px 0;
   word-break: keep-all;
   white-space: nowrap;
   flex-grow: 1;
@@ -81,7 +82,6 @@ export default {
     return {
       msgbus: null,
       playing: false,
-      filename: '',
       status: '',
       progress: 'scaleX(0)'
     }
@@ -89,9 +89,8 @@ export default {
   created () {
     this.msgbus = this.$root.msgbus
     this.msgbus.$off([ 'toggleplay', 'progress', 'status' ])
-    this.msgbus.$on('toggleplay', (bool, filename) => {
+    this.msgbus.$on('toggleplay', (bool) => {
       this.playing = bool
-      this.filename = filename
     })
     this.msgbus.$on('progress', (progress) => {
       this.progress = progress
@@ -121,6 +120,15 @@ export default {
     },
     next () {
       this.$root.next()
+    }
+  },
+  computed: {
+    filename () {
+      if (this.$root.currentFile) {
+        return this.$root.currentFile.name
+      } else {
+        return ''
+      }
     }
   }
 }
