@@ -27,6 +27,7 @@
         data-mdc-auto-init="MDCRipple"
         v-for="file in filelist"
         :key="file.id"
+        :class="{ 'mdc-list-item--selected': selectedId === file.id }"
         @click="select(file)"
         tabindex="0">
         <span class="mdc-list-item__graphic" role="presentation">
