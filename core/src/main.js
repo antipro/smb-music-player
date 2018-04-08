@@ -282,7 +282,7 @@ new Vue({
         }
         if (this.playmode === 1) { // one loop
           setTimeout(() => {
-            this.play(this.currentFile.url)
+            audioPlayer.play()
           }, 500)
         }
       }, mediaError => {
