@@ -77,6 +77,9 @@ import { MDCSlider } from '@material/slider'
 
 export default {
   name: 'setting',
+  created () {
+    this.$parent.title = 'Setting'
+  },
   mounted () {
     const slider = new MDCSlider(document.querySelector('.mdc-slider'))
     slider.listen('MDCSlider:change', () => {
