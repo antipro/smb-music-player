@@ -52,7 +52,7 @@
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
-      <label for="loop_4">Playlist Loop</label>
+      <label for="loop_3">Playlist Loop</label>
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
@@ -62,7 +62,7 @@
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
-      <label for="loop_3">Random</label>
+      <label for="loop_4">Random</label>
     </div>
   </div>
 </template>

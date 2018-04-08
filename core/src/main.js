@@ -32,6 +32,7 @@ new Vue({
     directorylist: [],
     currentFile: null,
     msgbus: new Vue(),
+    filelist: [],
     mediaStatus: null,
     online: false,
     ssid: '',

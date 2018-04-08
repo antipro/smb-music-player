@@ -66,8 +66,7 @@ export default {
       msgbus: null,
       phrase: '',
       focused: false,
-      selectedId: 0,
-      filelist: []
+      selectedId: 0
     }
   },
   persist: [ 'phrase' ],
@@ -160,10 +159,15 @@ export default {
       }
     }
   },
+  computed: {
+    filelist () {
+      return this.$root.filelist
+    }
+  },
   watch: {
     phrase (val) {
       if (this.phrase === '') {
-        this.filelist = []
+        this.$root.filelist = []
         return
       }
       let fidlist = []
@@ -174,12 +178,12 @@ export default {
       }
       // let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
       if (fidlist.length === 0) {
-        this.filelist = []
+        this.$root.filelist = []
         return
       }
       let regex = new RegExp(this.phrase, 'i')
       db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(30).toArray(filelist => {
-        this.filelist = filelist
+        this.$root.filelist = filelist
       })
     }
   }

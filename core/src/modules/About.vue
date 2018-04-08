@@ -12,7 +12,6 @@ export default {
   },
   created () {
     this.$parent.title = 'About'
-    this.$parent.showPrompt()
   }
 }
 </script>
