@@ -332,7 +332,7 @@ new Vue({
           break
         case window.Media.MEDIA_RUNNING:
           console.log('running')
-          this.msgbus.$emit('toggleplay', true)
+          this.msgbus.$emit('toggleplay', true, this.currentFile.name)
           mediaTimer = setInterval(() => {
             audioPlayer.getCurrentPosition(position => {
               let duration = audioPlayer.getDuration()

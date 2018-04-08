@@ -19,7 +19,8 @@
       @click="next">
       <span class="mdc-fab__icon">skip_next</span>
     </button>
-    <div class="progress-bar">
+    <div class="info-bar">
+      <div class="message">&nbsp;{{ filename }}</div>
       <div role="progressbar" class="mdc-linear-progress" @click="seekTo">
         <div class="mdc-linear-progress__buffering-dots"></div>
         <div class="mdc-linear-progress__buffer"></div>
@@ -30,7 +31,7 @@
           <span class="mdc-linear-progress__bar-inner"></span>
         </div>
       </div>
-      <p class="message">{{ status }}</p>
+      <div class="message">&nbsp;{{ status }}</div>
     </div>
   </div>
 </template>
@@ -49,23 +50,27 @@
 .control .play-btn {
   font-size: 48px;
 }
-.control .progress-bar {
+.control .info-bar {
   flex-grow: 1;
   margin: 3px;
-  background-color: #FFF;
-  height: 5px;
   border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
 }
-.control .progress-bar .progress {
+.control .info-bar .progress {
   background-color: #772b96;
   border-radius: 2px;
-  height: 100%;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
-.control .progress-bar .message {
-  width: 100%;
-  word-wrap: break-word;
-  word-break: break-word;
-  margin: 5px 0;
+.control .info-bar .message {
+  overflow: hidden;
+  word-break: keep-all;
+  white-space: nowrap;
+  flex-grow: 1;
+  text-overflow: ellipsis;
 }
 </style>
 
@@ -84,8 +89,9 @@ export default {
   created () {
     this.msgbus = this.$root.msgbus
     this.msgbus.$off([ 'toggleplay', 'progress', 'status' ])
-    this.msgbus.$on('toggleplay', (bool) => {
+    this.msgbus.$on('toggleplay', (bool, filename) => {
       this.playing = bool
+      this.filename = filename
     })
     this.msgbus.$on('progress', (progress) => {
       this.progress = progress
