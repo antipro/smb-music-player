@@ -38,10 +38,11 @@ new Vue({
     ssid: '',
     app: null,
     cachelimit: 3,
+    searchlimit: 30,
     playmode: 0,
     manual: true
   },
-  persist: [ 'cachelimit', 'playmode' ],
+  persist: [ 'cachelimit', 'searchlimit', 'playmode' ],
   mounted () {
     document.addEventListener('deviceready', () => {
       window.StatusBar.backgroundColorByHexString('#ff6659')

@@ -182,7 +182,7 @@ export default {
         return
       }
       let regex = new RegExp(this.phrase, 'i')
-      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(30).toArray(filelist => {
+      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(this.$root.searchlimit).toArray(filelist => {
         this.$root.filelist = filelist
       })
     }
