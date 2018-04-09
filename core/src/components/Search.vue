@@ -42,7 +42,7 @@
         </span>
         <span
           class="mdc-list-item__meta"
-          v-if="file.type === 0 && file.save">
+          v-if="file.type === 2 && file.save">
           <i class="material-icons" aria-hidden="true">save</i>
         </span>
         <span
