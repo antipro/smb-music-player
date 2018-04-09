@@ -449,16 +449,22 @@ new Vue({
       }
     },
     clearCache () {
-      let fileEntries = []
+      let promiselist = []
       let process = () => {
-        if (fileEntries.length <= this.cachelimit) {
-          return
-        }
-        let deleteCount = fileEntries.length - this.cachelimit
-        while (deleteCount > 0) {
-          fileEntries.shift().remove(() => console.log('cache file removed'))
-          deleteCount--
-        }
+        Promise.all(promiselist).then(fileEntries => {
+          if (fileEntries.length <= this.cachelimit) {
+            return
+          }
+          let deleteCount = fileEntries.length - this.cachelimit
+          fileEntries.sort((a, b) => {
+            return a.ctime - b.ctime
+          })
+          while (deleteCount > 0) {
+            fileEntries.shift().remove(() => console.log('cache file removed'))
+            deleteCount--
+          }
+          console.log('cache cleared')
+        }).catch(console.error)
       }
       resolveFileEntry(window.cordova.file.dataDirectory).then((dirEntry) => {
         let dirReader = dirEntry.createReader()
@@ -467,7 +473,16 @@ new Vue({
             if (!results.length) {
               process()
             } else {
-              fileEntries = fileEntries.concat(results.filter(entry => entry.isFile && entry.name.startsWith('file_')))
+              promiselist = promiselist.concat(results.filter(entry => {
+                return entry.isFile && entry.name.startsWith('file_')
+              }).map(entry => {
+                return new Promise((resolve, reject) => {
+                  entry.getMetadata(metadata => {
+                    entry.ctime = metadata.modificationTime.getTime()
+                    resolve(entry)
+                  }, reject)
+                })
+              }))
               readEntries()
             }
           }, error => console.error(error))
