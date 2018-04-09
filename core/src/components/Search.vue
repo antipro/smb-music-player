@@ -21,7 +21,7 @@
         @click="phrase = ''">clear</i>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
-    <ul class="mdc-list mdc-list--two-line">
+    <ul class="mdc-list mdc-list--two-line mdc-list--avatar-list">
       <li
         class="mdc-list-item"
         data-mdc-auto-init="MDCRipple"
@@ -40,6 +40,11 @@
             Size: {{ formatSize(file.length) }}
           </span>
         </span>
+        <span
+          class="mdc-list-item__meta"
+          v-if="file.save">
+          <i class="material-icons" aria-hidden="true">save</i>
+        </span>
       </li>
     </ul>
   </div>
@@ -56,8 +61,9 @@
 </style>
 
 <script>
+import Vue from 'vue'
 import db from '../database'
-import { formatSize } from '../utils'
+import { formatSize, resolveURL } from '../utils'
 
 export default {
   name: 'search',
@@ -144,7 +150,24 @@ export default {
       this.selectedId = this.$root.currentFile.id
     }
   },
+  mounted () {
+    document.addEventListener('resume', this.checkCache, false)
+  },
+  beforeDestroy () {
+    document.removeEventListener('resume', this.checkCache, false)
+  },
   methods: {
+    checkCache () {
+      this.$root.filelist.forEach(file => {
+        resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+          if (url) {
+            Vue.set(file, 'save', true)
+          } else {
+            Vue.delete(file, 'save')
+          }
+        })
+      })
+    },
     formatSize: formatSize,
     select (file) {
       switch (file.type) {
@@ -184,6 +207,7 @@ export default {
       let regex = new RegExp(this.phrase, 'i')
       db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(this.$root.searchlimit).toArray(filelist => {
         this.$root.filelist = filelist
+        this.checkCache()
       })
     }
   }

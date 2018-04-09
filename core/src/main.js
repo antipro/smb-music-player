@@ -253,6 +253,7 @@ new Vue({
             return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
           })()
         }).then((fileEntry) => {
+          Vue.set(file, 'save', true)
           console.log('fetch url', fileEntry)
           delete promiseStore[file.id]
           return Promise.resolve(fileEntry.toURL())
