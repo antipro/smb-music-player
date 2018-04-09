@@ -1,5 +1,5 @@
 <template>
-  <div class="directory">
+  <div class="folder">
     <ul class="mdc-list mdc-list--two-line">
       <li
         class="mdc-list-item"
@@ -14,20 +14,20 @@
       </li>
       <li
         class="mdc-list-item"
-        v-for="directory in directorylist"
-        :key="directory.url"
-        @click="openDir(directory.url)"
-        @touchstart="starttouch(directory)"
+        v-for="folder in folderlist"
+        :key="folder.nativeURL"
+        @click="openFolder(folder.nativeURL)"
+        @touchstart="starttouch(folder)"
         @touchmove="endtouch"
         @touchend="endtouch"
-        :class="{ 'mdc-list-item--selected': selectedDirectory.url === directory.url }">
+        :class="{ 'mdc-list-item--selected': selectedFolder.nativeURL === folder.nativeURL }">
         <span class="mdc-list-item__graphic" role="presentation">
           <i class="material-icons" aria-hidden="true">folder</i>
         </span>
         <span class="mdc-list-item__text">
-          {{ directory.name }}
+          {{ folder.name }}
           <span class="mdc-list-item__secondary-text">
-            URL: {{ directory.url }}
+            URL: {{ folder.nativeURL }}
           </span>
         </span>
       </li>
@@ -36,8 +36,8 @@
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Microphone"
       data-mdc-auto-init="MDCRipple"
-      v-show="selectedDirectory.url"
-      @click="selectDir">
+      v-show="selectedFolder.nativeURL"
+      @click="selectFolder">
       <span class="mdc-fab__icon">done</span>
     </button>
     <confirm ref="confirmdlg" :title="confirmTitle" @confirm="confirmed"></confirm>
@@ -46,14 +46,14 @@
 </template>
 
 <style>
-.directory .app-fab--absolute {
+.folder .app-fab--absolute {
   position: fixed;
   bottom: 100px;
   right: 1rem;
 }
 
 @media(min-width: 1024px) {
-   .directory .app-fab--absolute {
+   .folder .app-fab--absolute {
     bottom: 150px;
     right: 1.5rem;
   }
@@ -68,43 +68,34 @@ import Prompt from '@/components/Prompt'
 const TOUCHDURATION = 500
 var timer = 0
 export default {
-  name: 'directroy',
+  name: 'folder',
   data () {
     return {
       currentUrl: '',
       parentUrlStack: [],
-      directorylist: [],
-      selectedDirectory: {},
+      folderlist: [],
+      selectedFolder: {},
       confirmTitle: '',
       promptTitle: ''
     }
   },
   created () {
-    this.$parent.title = 'Storage Directory'
-    if (!this.$route.params.url) {
-      this.$router.go(-1)
-    }
-    if (window.cifs) {
-      window.cifs.dir(this.$route.params.url, (files) => {
-        this.directorylist = files.filter(file => {
-          return file.directory && !file.name.endsWith('$/')
-        })
-        this.currentUrl = this.$route.params.url
-        this.$parent.showMsg('Select Directory By Long Press')
-      }, function (error) {
-        console.error(error)
-        this.$parent.showMsg('CIFS Error')
+    this.$parent.title = 'Local Folder'
+    if (window.cordova) {
+      window.resolveLocalFileSystemURL(window.cordova.file.externalRootDirectory, (dirEntry) => {
+        let dirReader = dirEntry.createReader()
+        let readEntries = () => {
+          dirReader.readEntries((results) => {
+            if (results.length) {
+              this.folderlist = this.folderlist.concat(results.filter(entry => entry.isDirectory))
+              readEntries()
+            } else {
+              this.currentUrl = window.cordova.file.externalRootDirectory
+            }
+          }, error => console.error(error))
+        }
+        readEntries()
       })
-    } else {
-      this.directorylist = [ {
-        name: 'Youtube',
-        url: 'smb://192.168.0.144/Music/Youtube/',
-        directory: true
-      }, {
-        name: 'CloudMusic',
-        url: 'smb://192.168.0.144/Music/CloudMusic/',
-        directory: true
-      }]
     }
   },
   mounted () {
@@ -117,18 +108,23 @@ export default {
     confirm (evt) {
       this.showConfirm()
     },
-    openDir (url) {
-      this.selectedDirectory = {}
+    openFolder (url) {
+      this.selectedFolder = {}
       this.parentUrlStack.push(this.currentUrl)
-      window.cifs.dir(url, (files) => {
-        this.directorylist = files.filter(file => {
-          return file.directory && !file.name.endsWith('$/')
-        })
-        this.currentUrl = url
-        document.querySelector('.main').scrollTop = 0
-      }, function (error) {
-        console.error(error)
-        this.$parent.showMsg('CIFS Error')
+      window.resolveLocalFileSystemURL(url, (dirEntry) => {
+        this.folderlist = []
+        let dirReader = dirEntry.createReader()
+        let readEntries = () => {
+          dirReader.readEntries((results) => {
+            if (results.length) {
+              this.folderlist = this.folderlist.concat(results.filter(entry => entry.isDirectory))
+              readEntries()
+            } else {
+              this.currentUrl = url
+            }
+          }, error => console.error(error))
+        }
+        readEntries()
       })
     },
     rollBack () {
@@ -138,28 +134,37 @@ export default {
       this.selectedDirectory = {}
       let oldUrl = this.currentUrl
       this.currentUrl = this.parentUrlStack.pop()
-      window.cifs.dir(this.currentUrl, (files) => {
-        this.directorylist = files.filter(file => {
-          return file.directory && !file.name.endsWith('$/')
-        })
-        document.querySelector('.main').scrollTop = 0
-      }, error => {
-        console.error(error)
-        this.$parent.showMsg('CIFS Error')
-        this.parentUrlStack.push(this.currentUrl)
-        this.currentUrl = oldUrl
+      window.resolveLocalFileSystemURL(this.currentUrl, (dirEntry) => {
+        this.folderlist = []
+        let dirReader = dirEntry.createReader()
+        let readEntries = () => {
+          dirReader.readEntries((results) => {
+            if (results.length) {
+              this.folderlist = this.folderlist.concat(results.filter(entry => entry.isDirectory))
+              readEntries()
+            } else {
+              document.querySelector('.main').scrollTop = 0
+            }
+          }, error => {
+            console.error(error)
+            this.$parent.showMsg('Folder Error')
+            this.parentUrlStack.push(this.currentUrl)
+            this.currentUrl = oldUrl
+          })
+        }
+        readEntries()
       })
     },
-    starttouch (directory) {
-      timer = setTimeout(this.longtouch, TOUCHDURATION, directory)
+    starttouch (folder) {
+      timer = setTimeout(this.longtouch, TOUCHDURATION, folder)
     },
     endtouch () {
       if (timer) {
         clearTimeout(timer)
       }
     },
-    longtouch (directory) {
-      this.selectedDirectory = directory
+    longtouch (folder) {
+      this.selectedFolder = folder
     },
     showConfirm () {
       this.confirmTitle = 'Exit without save?'
@@ -170,11 +175,11 @@ export default {
         history.back()
       }
     },
-    selectDir () {
-      if (!this.selectedDirectory.url) {
+    selectFolder () {
+      if (!this.selectedFolder.nativeURL) {
         return
       }
-      this.promptTitle = 'Name for directory'
+      this.promptTitle = 'Name for folder'
     },
     prompted (val) {
       this.promptTitle = ''
@@ -183,9 +188,9 @@ export default {
       }
       let directory = {
         name: val,
-        url: this.selectedDirectory.url,
+        url: this.selectedFolder.nativeURL,
         files: 0,
-        type: 2,
+        type: 1,
         lastupdate: null
       }
       db.directories.add(directory).then((id) => {

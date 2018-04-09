@@ -116,6 +116,13 @@ new Vue({
       })
     },
     checkDir (directory) {
+      if (directory.type === 1) {
+        Vue.set(directory, 'reachable', true)
+        if (directory.lastupdate === null) {
+          return this.updateFolder(directory)
+        }
+        return Promise.resolve()
+      }
       if (!window.cifs) {
         return Promise.reject(new Error('window.cifs undefined'))
       }
@@ -203,6 +210,65 @@ new Vue({
         this.$refs.app.showMsg('Error')
       })
     },
+    updateFolder (directory) {
+      let promiselist = []
+      let process = () => {
+        Promise.all(promiselist).then(filelist => {
+          directory.files = filelist.length
+          return db.files.bulkPut(filelist)
+        }).then(() => {
+          return db.directories.put({
+            id: directory.id,
+            name: directory.name,
+            url: directory.url,
+            files: directory.files,
+            type: directory.type,
+            lastupdate: new Date()
+          })
+        }).then(() => {
+          Vue.set(directory, 'inprogress', false)
+        }).catch(error => {
+          console.error(error)
+          Vue.set(directory, 'inprogress', false)
+          this.$refs.app.showMsg('Scan Error')
+        })
+      }
+      Vue.set(directory, 'inprogress', true)
+      window.resolveLocalFileSystemURL(directory.url, (dirEntry) => {
+        let dirReader = dirEntry.createReader()
+        let readEntries = () => {
+          dirReader.readEntries((results) => {
+            if (results.length) {
+              promiselist = promiselist.concat(results.filter(entry => entry.isFile && entry.name.match(/(mp3|m4a|flac|wav|mp4)$/i)).map(entry => {
+                return new Promise((resolve, reject) => {
+                  entry.getMetadata(metadata => {
+                    resolve({
+                      name: entry.name,
+                      url: entry.nativeURL,
+                      length: metadata.size,
+                      fid: directory.id,
+                      type: directory.type
+                    })
+                  }, reject)
+                })
+              }))
+              readEntries()
+            } else {
+              process()
+            }
+          }, error => {
+            console.error(error)
+            Vue.set(directory, 'inprogress', false)
+            this.$refs.app.showMsg('Scan Error')
+          })
+        }
+        readEntries()
+      }, error => {
+        console.error(error)
+        Vue.set(directory, 'inprogress', false)
+        this.$refs.app.showMsg('Scan Error')
+      })
+    },
     playSmbFile (file) {
       if (!window.cifs) {
         return
@@ -225,6 +291,18 @@ new Vue({
         console.error(error)
         this.$refs.app.showMsg(error)
       })
+    },
+    playLocalFile (file) {
+      this.manual = true
+      if (audioPlayer) {
+        audioPlayer.stop()
+        audioPlayer.release()
+      }
+      this.currentFile = file
+      this.msgbus.$emit('position', file)
+      audioPlayer = null
+      this.play(file.url)
+      this.msgbus.$emit('preload')
     },
     load (file) {
       if (promiseStore[file.id]) {

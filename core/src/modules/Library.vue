@@ -37,7 +37,7 @@
             title="Sync"
             aria-label="Sync Directory"
             v-if="directory.reachable"
-            @click.stop="$root.updateDir(directory)">sync</i>
+            @click.stop="update(directory)">sync</i>
           <i
             class="material-icons mdc-card__action mdc-card__action--icon"
             tabindex="0"
@@ -68,22 +68,55 @@
       </div>
     </div>
     <router-link
+      class="mdc-fab mdc-fab--mini material-icons app-fab--absolute"
+      aria-label="Folder"
+      :to="{ name: 'folder' }"
+      :class="{ 'app-fab-expand2': expanded }">
+      <span class="mdc-fab__icon">phone_android</span>
+    </router-link>
+    <router-link
+      class="mdc-fab mdc-fab--mini material-icons app-fab--absolute"
+      aria-label="Storage"
+      :to="{ name: 'auth' }"
+      :class="{ 'app-fab-expand1': expanded }">
+      <span class="mdc-fab__icon">storage</span>
+    </router-link>
+    <button
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Add"
-      :to="{ name: 'auth' }">
+      @click="expanded = !expanded"
+      :class="{ 'app-fab-collapse': expanded }">
       <span class="mdc-fab__icon">add</span>
-    </router-link>
+    </button>
   </div>
 </template>
 
 <style>
 .library .app-fab--absolute {
-  position: fixed; bottom: 100px; right: 1rem;
+  position: fixed; bottom: 100px; right: 1.0rem;
+}
+.library .mdc-fab--mini {
+  bottom: 110px; right: 1.5rem;
 }
 @media(min-width: 1024px) {
-   .library .app-fab--absolute {
+  .library .app-fab--absolute {
     bottom: 150px; right: 1.5rem;
   }
+  .library .mdc-fab--mini {
+    bottom: 160px; right: 2.0rem;
+  }
+}
+.library .app-fab-expand1 {
+  transition-timing-function: cubic-bezier(.4, 0, 1, 1);
+  transform: translateY(-60px)
+}
+.library .app-fab-expand2 {
+  transition-timing-function: cubic-bezier(.4, 0, 1, 1);
+  transform: translateY(-110px)
+}
+.library .app-fab-collapse {
+  transition-timing-function: cubic-bezier(.4, 0, 1, 1);
+  transform: rotate(45deg);
 }
 .library .mdc-card {
   margin: 15px;
@@ -124,6 +157,11 @@
 <script>
 export default {
   name: 'library',
+  data () {
+    return {
+      expanded: false
+    }
+  },
   created () {
     this.$parent.title = 'Library'
   },
@@ -134,6 +172,14 @@ export default {
         return url.replace(m[0], '//***@')
       }
       return url
+    },
+    update (directory) {
+      if (directory.type === 1) {
+        this.$root.updateFolder(directory)
+      }
+      if (directory.type === 2) {
+        this.$root.updateDir(directory)
+      }
     }
   },
   computed: {

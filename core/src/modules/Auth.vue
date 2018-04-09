@@ -102,7 +102,7 @@ export default {
     }
   },
   created () {
-    this.$parent.title = 'Auth'
+    this.$parent.title = 'Storage Authorization'
   },
   methods: {
     accept () {

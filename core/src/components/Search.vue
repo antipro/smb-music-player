@@ -142,6 +142,9 @@ export default {
       if (!file) {
         return
       }
+      if (file.type !== 2) {
+        return
+      }
       this.$root.load(file)
     })
     this.msgbus.$on('reset', () => {
@@ -180,7 +183,7 @@ export default {
           // TODO play localhost music just for test
           break
         case 1:
-          // TODO play music from sdcard
+          this.$root.playLocalFile(file)
           break
         case 2:
           this.$root.playSmbFile(file)
