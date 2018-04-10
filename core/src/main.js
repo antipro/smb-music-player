@@ -211,62 +211,64 @@ new Vue({
       })
     },
     updateFolder (directory) {
-      let promiselist = []
-      let process = () => {
-        Promise.all(promiselist).then(filelist => {
-          directory.files = filelist.length
-          return db.files.bulkPut(filelist)
-        }).then(() => {
-          return db.directories.put({
-            id: directory.id,
-            name: directory.name,
-            url: directory.url,
-            files: directory.files,
-            type: directory.type,
-            lastupdate: new Date()
+      // recursive callback return array of FileEntry
+      let iterator = async (dirEntry) => {
+        let entrylist = []
+        let dirReader = dirEntry.createReader()
+        let results = null
+        do {
+          results = await new Promise((resolve, reject) => {
+            dirReader.readEntries(resolve, reject)
           })
-        }).then(() => {
-          Vue.set(directory, 'inprogress', false)
-        }).catch(error => {
-          console.error(error)
-          Vue.set(directory, 'inprogress', false)
-          this.$refs.app.showMsg('Scan Error')
-        })
+          for (const entry of results) {
+            if (entry.name.startsWith('.')) {
+              continue
+            }
+            if (entry.isFile) {
+              entrylist.push(entry)
+            } else {
+              entrylist = entrylist.concat(await iterator(entry))
+            }
+          }
+        } while (results.length > 0)
+        return entrylist
       }
       Vue.set(directory, 'inprogress', true)
-      window.resolveLocalFileSystemURL(directory.url, (dirEntry) => {
-        let dirReader = dirEntry.createReader()
-        let readEntries = () => {
-          dirReader.readEntries((results) => {
-            if (results.length) {
-              promiselist = promiselist.concat(results.filter(entry => entry.isFile && entry.name.match(/(mp3|m4a|flac|wav|mp4)$/i)).map(entry => {
-                return new Promise((resolve, reject) => {
-                  entry.getMetadata(metadata => {
-                    resolve({
-                      name: entry.name,
-                      url: entry.nativeURL,
-                      length: metadata.size,
-                      fid: directory.id,
-                      type: directory.type
-                    })
-                  }, reject)
-                })
-              }))
-              readEntries()
-            } else {
-              process()
-            }
-          }, error => {
-            console.error(error)
-            Vue.set(directory, 'inprogress', false)
-            this.$refs.app.showMsg('Scan Error')
+      resolveFileEntry(directory.url).then(dirEntry => {
+        return iterator(dirEntry)
+      }).then(entrylist => {
+        return Promise.all(entrylist.filter(entry => {
+          return entry.name.match(/(mp3|m4a|flac|wav|mp4)$/i)
+        }).map(entry => {
+          return new Promise((resolve, reject) => {
+            entry.getMetadata(metadata => {
+              resolve({
+                name: entry.name,
+                url: entry.nativeURL,
+                length: metadata.size,
+                fid: directory.id,
+                type: directory.type
+              })
+            }, reject)
           })
-        }
-        readEntries()
-      }, error => {
+        }))
+      }).then(filelist => {
+        directory.files = filelist.length
+        return db.files.bulkPut(filelist)
+      }).then(() => {
+        return db.directories.put({
+          id: directory.id,
+          name: directory.name,
+          url: directory.url,
+          files: directory.files,
+          type: directory.type,
+          lastupdate: new Date()
+        })
+      }).then(() => {
+        Vue.set(directory, 'inprogress', false)
+      }).catch(error => {
         console.error(error)
         Vue.set(directory, 'inprogress', false)
-        this.$refs.app.showMsg('Scan Error')
       })
     },
     playSmbFile (file) {
