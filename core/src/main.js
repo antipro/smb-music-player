@@ -221,7 +221,7 @@ new Vue({
             dirReader.readEntries(resolve, reject)
           })
           for (const entry of results) {
-            if (entry.name.startsWith('.')) {
+            if (entry.name.startsWith('.')) { // ignore hidden file or folder
               continue
             }
             if (entry.isFile) {
