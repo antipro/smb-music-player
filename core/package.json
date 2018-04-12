@@ -28,6 +28,7 @@
     "@material/switch": "^0.33.0",
     "@material/textfield": "^0.33.0",
     "@material/theme": "^0.33.0",
+    "axios": "^0.18.0",
     "dexie": "^2.0.2",
     "es6-promise": "^4.2.4",
     "lodash": "^4.17.5",

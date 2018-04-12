@@ -2,11 +2,13 @@
   <div class="player">
     <search></search>
     <control></control>
+    <record ref="record"></record>
     <button
       class="mdc-fab material-icons app-fab--absolute"
       aria-label="Microphone"
       data-mdc-auto-init="MDCRipple"
-      @click="toggleMic">
+      v-if="!listening"
+      @click="showRecord">
       <span v-if="listening" class="mdc-fab__icon">mic_off</span>
       <span v-else class="mdc-fab__icon">mic</span>
     </button>
@@ -41,6 +43,7 @@
 <script>
 import Control from '../components/Control'
 import Search from '../components/Search'
+import Record from '../components/Record'
 import mdcAutoInit from '@material/auto-init'
 
 export default {
@@ -70,12 +73,13 @@ export default {
         console.log('go home fail')
       })
     },
-    toggleMic () {
-      this.listening = !this.listening
+    showRecord () {
+      this.listening = true
+      this.$refs.record.startRecord()
     }
   },
   components: {
-    Control, Search
+    Control, Search, Record
   }
 }
 </script>

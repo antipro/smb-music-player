@@ -87,6 +87,9 @@ export default {
     this.msgbus.$on('position', file => {
       this.selectedId = file.id
     })
+    this.msgbus.$on('search', phrase => {
+      this.phrase = phrase
+    })
     this.msgbus.$on('next', () => {
       let idx = this.filelist.findIndex(file => {
         return file.id === this.selectedId
