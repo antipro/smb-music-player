@@ -68,7 +68,7 @@ export default {
       recording: false,
       cancel: false,
       parsing: false,
-      countdown: 10,
+      countdown: 5,
       msgbus: null,
       candidates: []
     }
@@ -87,7 +87,10 @@ export default {
   methods: {
     startRecord () {
       this.candidates = []
-      this.countdown = 10
+      this.countdown = 5
+      if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
+        this.$root.pause()
+      }
       if (audioRecorder) {
         audioRecorder.stopRecord()
         audioRecorder.release()
@@ -98,6 +101,9 @@ export default {
           return
         }
         this.processFile()
+        if (this.$root.mediaStatus === window.Media.MEDIA_PAUSED) {
+          this.$root.resume()
+        }
       }, mediaError => {
         console.error(mediaError)
       }, mediaStatus => {
@@ -155,6 +161,7 @@ export default {
         })()
       }).then(res => {
         if (res.err_no !== 0) {
+          this.$parent.listening = false
           this.$parent.$parent.showMsg(res.err_msg)
           return
         }
