@@ -1,6 +1,5 @@
 <template>
   <div class="setting">
-    <h1>Setting</h1>
     <h3>Cache Limit <small>{{ $root.cachelimit }}</small></h3>
     <div
       id="cache_limit"
