@@ -6,12 +6,12 @@
     <div class="mdc-dialog__surface">
       <header class="mdc-dialog__header">
         <h2 class="mdc-dialog__header__title">
-          Speek
+          Speak
         </h2>
       </header>
       <section class="mdc-dialog__body">
-        <div v-if="parsing">
-          <h3 class="message" v-show="candidates.length === 0">Parsing...</h3>
+        <div v-show="parsing === true">
+          <h3 class="record-message" v-show="candidates.length === 0">Parsing...</h3>
           <ul class="mdc-list mdc-list--dense">
             <li
               class="mdc-list-item"
@@ -20,9 +20,9 @@
               @click="chooseResult(candidate)">{{ format(candidate) }}</li>
           </ul>
         </div>
-        <div v-else class="sound-wrapper">
+        <div v-show="parsing === false" class="sound-wrapper">
           <canvas class="sound"></canvas>
-          <h3 class="message">{{ parseInt(countdown) }}</h3>
+          <h3 class="record-message">{{ countdown }}</h3>
         </div>
       </section>
       <footer class="mdc-dialog__footer">
@@ -43,7 +43,7 @@
 
 <style>
 .record .sound { margin: 0 auto; }
-.record .message { text-align: center; }
+.record .record-message { text-align: center; }
 </style>
 
 <script>
@@ -88,11 +88,11 @@ export default {
   },
   methods: {
     startRecord () {
-      console.log(document.querySelectorAll('.sound'))
       this.candidates = []
       this.countdown = 5
       this.parsing = false
       this.cancel = false
+      console.log(this.parsing, document.querySelector('.record').outerHTML)
       if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
         this.$root.pause()
         this.needResume = true
@@ -126,11 +126,11 @@ export default {
     },
     processFile () {
       this.parsing = true
-      resolveFileEntry(window.cordova.file.cacheDirectory + 'speech.amr').then(fileEntry => {
+      resolveFileEntry(window.cordova.file.cacheDirectory + 'speech.amr').then(fileEntry => { // get file
         return new Promise((resolve, reject) => {
           fileEntry.file(resolve, reject)
         })
-      }).then(file => {
+      }).then(file => { // read file content
         return new Promise((resolve, reject) => {
           let reader = new FileReader()
           reader.onerror = reject
@@ -139,7 +139,7 @@ export default {
           }
           reader.readAsArrayBuffer(file)
         })
-      }).then(result => {
+      }).then(result => { // get token and speech recognization
         return (async () => {
           let response = await axios({
             method: 'get',
@@ -164,7 +164,7 @@ export default {
           }
           return response.data
         })()
-      }).then(res => {
+      }).then(res => { // proecss result
         if (this.cancel) {
           return
         }
