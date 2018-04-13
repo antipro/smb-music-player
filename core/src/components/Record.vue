@@ -6,12 +6,12 @@
     <div class="mdc-dialog__surface">
       <header class="mdc-dialog__header">
         <h2 class="mdc-dialog__header__title">
-          Record
+          Speek
         </h2>
       </header>
       <section class="mdc-dialog__body">
         <div v-if="parsing">
-          <p v-show="candidates.length === 0">Parsing...</p>
+          <h3 class="message" v-show="candidates.length === 0">Parsing...</h3>
           <ul class="mdc-list mdc-list--dense">
             <li
               class="mdc-list-item"
@@ -21,8 +21,8 @@
           </ul>
         </div>
         <div v-else class="sound-wrapper">
-          <canvas id="sound" class="sound"></canvas>
-          <h3 class="countdown">{{ parseInt(countdown) }}</h3>
+          <canvas class="sound"></canvas>
+          <h3 class="message">{{ parseInt(countdown) }}</h3>
         </div>
       </section>
       <footer class="mdc-dialog__footer">
@@ -43,7 +43,7 @@
 
 <style>
 .record .sound { margin: 0 auto; }
-.record .countdown { text-align: center; }
+.record .message { text-align: center; }
 </style>
 
 <script>
@@ -61,6 +61,7 @@ var centre = {
 var ctx = null
 var audioRecorder = null
 let mediaTimer = 0
+let waveTimer = 0
 export default {
   name: 'record',
   data () {
@@ -70,14 +71,15 @@ export default {
       parsing: false,
       countdown: 5,
       msgbus: null,
-      candidates: []
+      candidates: [],
+      needResume: false
     }
   },
   created () {
     this.msgbus = this.$root.msgbus
   },
   mounted () {
-    canvas = document.querySelector('#sound')
+    canvas = document.querySelector('.sound')
     canvas.width = document.querySelector('.sound-wrapper').clientWidth
     canvas.height = 200
     ctx = canvas.getContext('2d')
@@ -86,10 +88,14 @@ export default {
   },
   methods: {
     startRecord () {
+      console.log(document.querySelectorAll('.sound'))
       this.candidates = []
       this.countdown = 5
+      this.parsing = false
+      this.cancel = false
       if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
         this.$root.pause()
+        this.needResume = true
       }
       if (audioRecorder) {
         audioRecorder.stopRecord()
@@ -97,21 +103,20 @@ export default {
       }
       audioRecorder = new window.Media(window.cordova.file.cacheDirectory + 'speech.amr', () => {
         console.log('record done')
+        if (this.$root.mediaStatus === window.Media.MEDIA_PAUSED && this.needResume) {
+          this.$root.resume()
+          this.needResume = false
+        }
         if (this.cancel) {
           return
         }
         this.processFile()
-        if (this.$root.mediaStatus === window.Media.MEDIA_PAUSED) {
-          this.$root.resume()
-        }
       }, mediaError => {
         console.error(mediaError)
       }, mediaStatus => {
         this.changeStatus(mediaStatus)
       })
       audioRecorder.startRecord()
-      this.cancel = false
-      this.parsing = false
     },
     sayYes () {
       if (audioRecorder) {
@@ -160,6 +165,9 @@ export default {
           return response.data
         })()
       }).then(res => {
+        if (this.cancel) {
+          return
+        }
         if (res.err_no !== 0) {
           this.$parent.listening = false
           this.$parent.$parent.showMsg(res.err_msg)
@@ -170,6 +178,9 @@ export default {
         } else {
           this.candidates = res.result
         }
+      }).catch(error => {
+        console.error(error)
+        this.$parent.$parent.showMsg(error)
       })
     },
     sayNo () {
@@ -188,23 +199,24 @@ export default {
         case window.Media.MEDIA_RUNNING:
           console.log('running')
           mediaTimer = setInterval(() => {
-            this.countdown -= 0.5
-            if (this.countdown < 1) {
+            if (--this.countdown < 1) {
               this.sayYes()
-              return
             }
+          }, 1000)
+          waveTimer = setInterval(() => {
             audioRecorder.getCurrentAmplitude(amp => {
               this.showWave(amp)
             }, error => {
               console.log('Error getting amp=' + error)
             })
-          }, 500)
+          }, 100)
           break
         case window.Media.MEDIA_PAUSED:
           console.log('paused')
           break
         case window.Media.MEDIA_STOPPED:
           clearInterval(mediaTimer)
+          clearInterval(waveTimer)
           console.log('stopped')
           break
         default:
@@ -214,12 +226,12 @@ export default {
     showWave (amp) {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       radius = MIN + amp * RANGE
-      console.log(amp, radius)
       ctx.beginPath()
       ctx.arc(centre.x, centre.y, radius, 0, 2 * Math.PI)
-      var grd = ctx.createRadialGradient(centre.x, centre.y, 0, centre.x, centre.y, radius)
-      grd.addColorStop(0, 'red')
-      grd.addColorStop(1, 'white')
+      var grd = ctx.createRadialGradient(centre.x, centre.y, 10, centre.x, centre.y, radius)
+      grd.addColorStop(0, '#d32f2f')
+      grd.addColorStop(0.5, '#ff6659')
+      grd.addColorStop(1, '#FFF')
       ctx.fillStyle = grd
       ctx.fill()
     },

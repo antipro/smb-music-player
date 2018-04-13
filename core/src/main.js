@@ -97,7 +97,7 @@ new Vue({
         this.directorylist = directorylist
         return Promise.all(this.directorylist.map(directory => {
           Vue.delete(directory, 'inprogress')
-          if (directory.type === 0) {
+          if (directory.type === 1) {
             Vue.set(directory, 'reachable', true)
             return Promise.resolve()
           }
