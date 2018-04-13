@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import './backports'
-import db from './database'
+import { db, randomKeylist } from './database'
 import Vue from 'vue'
 import VuePersist from 'vue-persist'
 import App from './App'
@@ -40,9 +40,10 @@ new Vue({
     cachelimit: 3,
     searchlimit: 30,
     playmode: 0,
-    manual: true
+    manual: true,
+    phrase: ''
   },
-  persist: [ 'cachelimit', 'searchlimit', 'playmode' ],
+  persist: [ 'cachelimit', 'searchlimit', 'playmode', 'phrase' ],
   mounted () {
     document.addEventListener('deviceready', () => {
       window.StatusBar.backgroundColorByHexString('#ff6659')
@@ -97,7 +98,7 @@ new Vue({
         this.directorylist = directorylist
         return Promise.all(this.directorylist.map(directory => {
           Vue.delete(directory, 'inprogress')
-          if (directory.type === 1) {
+          if (directory.type === 1 || directory.type === 0) {
             Vue.set(directory, 'reachable', true)
             return Promise.resolve()
           }
@@ -450,6 +451,17 @@ new Vue({
           console.log('None')
       }
     },
+    checkCache () {
+      this.filelist.forEach(file => {
+        resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+          if (url) {
+            Vue.set(file, 'save', true)
+          } else {
+            Vue.delete(file, 'save')
+          }
+        })
+      })
+    },
     clearCache () {
       let promiselist = []
       let process = () => {
@@ -490,6 +502,69 @@ new Vue({
           }, error => console.error(error))
         }
         readEntries()
+      })
+    }
+  },
+  watch: {
+    phrase (val) {
+      if (this.phrase === '') {
+        this.filelist = []
+        return
+      }
+      if (this.phrase === ':cached') {
+        let keylist = []
+        let process = () => {
+          console.log(keylist)
+          db.files.where('id').anyOf(keylist).toArray(filelist => {
+            console.log(filelist)
+            this.filelist = filelist
+            this.checkCache()
+          })
+        }
+        resolveFileEntry(window.cordova.file.dataDirectory).then(dirEntry => {
+          let dirReader = dirEntry.createReader()
+          let readEntries = () => {
+            dirReader.readEntries((results) => {
+              if (!results.length) {
+                process()
+              } else {
+                keylist = keylist.concat(results.filter(entry => {
+                  return entry.isFile && entry.name.startsWith('file_')
+                }).map(entry => parseInt(entry.name.split('_')[1])))
+                readEntries()
+              }
+            }, error => console.error(error))
+          }
+          readEntries()
+        })
+        return
+      }
+      let fidlist = []
+      for (const directory of this.directorylist) {
+        if (directory.reachable) {
+          fidlist.push(directory.id)
+        }
+      }
+      if (fidlist.length === 0) {
+        this.filelist = []
+        return
+      }
+      let collection = db.files.where('fid').anyOf(fidlist)
+      if (this.phrase === ':random') {
+        randomKeylist(collection, this.searchlimit).then(keylist => {
+          console.log(keylist)
+          db.files.where('id').anyOf(keylist).toArray(filelist => {
+            console.log(filelist)
+            this.filelist = filelist
+            this.checkCache()
+          })
+        }).catch(console.error)
+        return
+      }
+      let regex = new RegExp(this.phrase, 'i')
+      collection.filter(file => regex.test(file.name)).limit(this.searchlimit).toArray(filelist => {
+        this.filelist = filelist
+        this.checkCache()
       })
     }
   }

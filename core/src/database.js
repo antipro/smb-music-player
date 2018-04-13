@@ -27,4 +27,22 @@ db.version(2).stores({
   })
 })
 
-export default db
+function randomKeylist (collection, limit) {
+  return collection.primaryKeys().then(keyArray => {
+    if (keyArray.length <= limit) {
+      return Promise.resolve(keyArray)
+    }
+    let keylist = []
+    let cnt = 0
+    do {
+      let idx = Math.floor(Math.random() * keyArray.length)
+      if (keylist.indexOf(idx) === -1) {
+        cnt++
+        keylist.push(keyArray[idx])
+      }
+    } while (cnt < limit)
+    return Promise.resolve(keylist)
+  })
+}
+
+export { db, randomKeylist }

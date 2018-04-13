@@ -61,7 +61,7 @@
 </style>
 
 <script>
-import db from '../database'
+import { db } from '../database'
 import Confirm from '@/components/Confirm'
 import Prompt from '@/components/Prompt'
 

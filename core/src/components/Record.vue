@@ -235,7 +235,7 @@ export default {
       ctx.fill()
     },
     chooseResult (phrase) {
-      this.msgbus.$emit('search', this.format(phrase))
+      this.$root.phrase = this.format(phrase)
       this.$parent.listening = false
     },
     format (candidate) {

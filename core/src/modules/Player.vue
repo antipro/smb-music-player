@@ -57,9 +57,11 @@ export default {
     this.$parent.title = 'Player'
   },
   mounted () {
+    document.addEventListener('resume', this.$root.checkCache, false)
     document.addEventListener('backbutton', this.backtoHome, false)
   },
   beforeDestroy () {
+    document.removeEventListener('resume', this.$root.checkCache, false)
     document.removeEventListener('backbutton', this.backtoHome, false)
   },
   updated () {

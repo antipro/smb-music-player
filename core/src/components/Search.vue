@@ -6,19 +6,19 @@
         type="text"
         id="search-input"
         class="mdc-text-field__input"
-        v-model="phrase"
+        v-model="$root.phrase"
         @focus="focused = true"
         @blur="focused = false">
       <label
         for="search-input"
         class="mdc-floating-label"
-        :class="{ 'mdc-floating-label--float-above': phrase !== '' || focused }">Search...</label>
+        :class="{ 'mdc-floating-label--float-above': $root.phrase !== '' || focused }">Search...</label>
       <i
-        v-show="phrase !== ''"
+        v-show="$root.phrase !== ''"
         class="material-icons mdc-text-field__icon"
         style="right: 15px; left: initial"
         tabindex="0"
-        @click="phrase = ''">clear</i>
+        @click="$root.phrase = ''">clear</i>
       <div class="mdc-text-field__bottom-line"></div>
     </div>
     <ul class="mdc-list mdc-list--two-line mdc-list--avatar-list">
@@ -52,6 +52,18 @@
         </span>
       </li>
     </ul>
+    <ul v-show="filelist.length === 0" class="action-btn mdc-list">
+      <li class="mdc-list-item">
+        <button class="mdc-button" @click="$root.phrase = ':cached'">
+          Cached
+        </button>
+      </li>
+      <li class="mdc-list-item">
+        <button class="mdc-button" @click="$root.phrase = ':random'">
+          Random
+        </button>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -63,32 +75,28 @@
   margin-top: 0;
   display: block;
 }
+.search .action-btn .mdc-list-item {
+  justify-content: center;
+}
 </style>
 
 <script>
-import Vue from 'vue'
-import db from '../database'
-import { formatSize, resolveURL } from '../utils'
+import { formatSize } from '../utils'
 
 export default {
   name: 'search',
   data () {
     return {
       msgbus: null,
-      phrase: '',
       focused: false,
       selectedId: 0
     }
   },
-  persist: [ 'phrase' ],
   created () {
     this.msgbus = this.$root.msgbus
     this.msgbus.$off([ 'position', 'next', 'previous', 'preload', 'reset', 'random' ])
     this.msgbus.$on('position', file => {
       this.selectedId = file.id
-    })
-    this.msgbus.$on('search', phrase => {
-      this.phrase = phrase
     })
     this.msgbus.$on('next', () => {
       let idx = this.filelist.findIndex(file => {
@@ -151,34 +159,17 @@ export default {
       this.$root.load(file)
     })
     this.msgbus.$on('reset', () => {
-      let bak = this.phrase
-      this.phrase = ''
+      let bak = this.$root.phrase
+      this.$root.phrase = ''
       setTimeout(() => {
-        this.phrase = bak
+        this.$root.phrase = bak
       }, 500)
     })
     if (this.$root.currentFile) {
       this.selectedId = this.$root.currentFile.id
     }
   },
-  mounted () {
-    document.addEventListener('resume', this.checkCache, false)
-  },
-  beforeDestroy () {
-    document.removeEventListener('resume', this.checkCache, false)
-  },
   methods: {
-    checkCache () {
-      this.$root.filelist.forEach(file => {
-        resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
-          if (url) {
-            Vue.set(file, 'save', true)
-          } else {
-            Vue.delete(file, 'save')
-          }
-        })
-      })
-    },
     formatSize: formatSize,
     select (file) {
       switch (file.type) {
@@ -196,30 +187,6 @@ export default {
   computed: {
     filelist () {
       return this.$root.filelist
-    }
-  },
-  watch: {
-    phrase (val) {
-      if (this.phrase === '') {
-        this.$root.filelist = []
-        return
-      }
-      let fidlist = []
-      for (const directory of this.$root.directorylist) {
-        if (directory.reachable) {
-          fidlist.push(directory.id)
-        }
-      }
-      // let fidlist = this.$root.directorylist.filter(directory => directory.reachable).map(directory => directory.id)
-      if (fidlist.length === 0) {
-        this.$root.filelist = []
-        return
-      }
-      let regex = new RegExp(this.phrase, 'i')
-      db.files.where('fid').anyOf(fidlist).filter(file => regex.test(file.name)).limit(this.$root.searchlimit).toArray(filelist => {
-        this.$root.filelist = filelist
-        this.checkCache()
-      })
     }
   }
 }
