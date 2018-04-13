@@ -161,21 +161,17 @@ new Vue({
               resolve()
               return
             }
-            let fileCount = 0
-            for (const file of resp.files) {
-              if (!file.name.match(/(mp3|m4a|flac|wav|mp4)$/i)) {
-                continue
-              }
-              db.files.put({
+            let filelist = resp.files.filter(file => file.name.match(/(mp3|m4a|flac|wav|mp4)$/i))
+            db.files.bulkPut(filelist.map(file => {
+              return {
                 name: file.name,
                 url: file.url,
                 length: file.length,
                 fid: directory.id,
                 type: directory.type
-              })
-              fileCount++
-            }
-            directory.files += fileCount
+              }
+            }))
+            directory.files += filelist.length
           }, error => {
             reject(error)
           })

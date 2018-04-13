@@ -12,6 +12,16 @@
       <section class="mdc-dialog__body">
         <div v-show="parsing === true">
           <h3 class="record-message" v-show="candidates.length === 0">Parsing...</h3>
+          <div v-show="candidates.length === 0" role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate">
+            <div class="mdc-linear-progress__buffering-dots"></div>
+            <div class="mdc-linear-progress__buffer"></div>
+            <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+              <span class="mdc-linear-progress__bar-inner"></span>
+            </div>
+            <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+              <span class="mdc-linear-progress__bar-inner"></span>
+            </div>
+          </div>
           <ul class="mdc-list mdc-list--dense">
             <li
               class="mdc-list-item"
