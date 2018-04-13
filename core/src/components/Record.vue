@@ -92,7 +92,6 @@ export default {
       this.countdown = 5
       this.parsing = false
       this.cancel = false
-      console.log(this.parsing, document.querySelector('.record').outerHTML)
       if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
         this.$root.pause()
         this.needResume = true
