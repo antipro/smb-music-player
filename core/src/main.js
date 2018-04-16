@@ -37,7 +37,7 @@ new Vue({
     online: false,
     ssid: '',
     app: null,
-    cachelimit: 3,
+    cachelimit: 30,
     searchlimit: 30,
     playmode: 0,
     manual: true,
