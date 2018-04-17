@@ -98,7 +98,7 @@ export default {
     this.msgbus.$on('status', (status) => {
       this.status = status
     })
-    if (window.Media && this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
+    if (Media && this.$root.mediaStatus === Media.MEDIA_RUNNING) {
       this.playing = true
     }
   },

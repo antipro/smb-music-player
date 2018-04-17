@@ -102,7 +102,7 @@ export default {
       this.countdown = 5
       this.parsing = false
       this.cancel = false
-      if (this.$root.mediaStatus === window.Media.MEDIA_RUNNING) {
+      if (this.$root.mediaStatus === Media.MEDIA_RUNNING) {
         this.$root.pause()
         this.needResume = true
       }
@@ -110,9 +110,9 @@ export default {
         audioRecorder.stopRecord()
         audioRecorder.release()
       }
-      audioRecorder = new window.Media(cordova.file.cacheDirectory + 'speech.amr', () => {
+      audioRecorder = new Media(cordova.file.cacheDirectory + 'speech.amr', () => {
         console.log('record done')
-        if (this.$root.mediaStatus === window.Media.MEDIA_PAUSED && this.needResume) {
+        if (this.$root.mediaStatus === Media.MEDIA_PAUSED && this.needResume) {
           this.$root.resume()
           this.needResume = false
         }
@@ -202,10 +202,10 @@ export default {
     },
     changeStatus (mediaStatus) {
       switch (mediaStatus) {
-        case window.Media.MEDIA_STARTING:
+        case Media.MEDIA_STARTING:
           console.log('starting')
           break
-        case window.Media.MEDIA_RUNNING:
+        case Media.MEDIA_RUNNING:
           console.log('running')
           mediaTimer = setInterval(() => {
             if (--this.countdown < 1) {
@@ -218,10 +218,10 @@ export default {
             }, console.error)
           }, 100)
           break
-        case window.Media.MEDIA_PAUSED:
+        case Media.MEDIA_PAUSED:
           console.log('paused')
           break
-        case window.Media.MEDIA_STOPPED:
+        case Media.MEDIA_STOPPED:
           clearInterval(mediaTimer)
           clearInterval(waveTimer)
           console.log('stopped')
