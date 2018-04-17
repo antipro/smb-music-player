@@ -55,7 +55,7 @@
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
-      <label for="loop_1">No Loop</label>
+      <label for="loop_1">Single</label>
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
@@ -65,7 +65,7 @@
           <div class="mdc-radio__inner-circle"></div>
         </div>
       </div>
-      <label for="loop_2">One Loop</label>
+      <label for="loop_2">Single Loop</label>
     </div>
     <div class="mdc-form-field">
       <div class="mdc-radio">
