@@ -6,7 +6,7 @@ import Vue from 'vue'
 import VuePersist from 'vue-persist'
 import App from './App'
 import router from './router'
-import { formatTime, resolveFileEntry, moveFileEntry, resolveURL } from './utils'
+import utils from './utils'
 
 Vue.use(VuePersist, {
   name: 'persist:smbmusic'
@@ -130,9 +130,7 @@ new Vue({
       return new Promise((resolve, reject) => {
         window.cifs.exist(directory.url, bool => {
           resolve(bool)
-        }, error => {
-          reject(error)
-        })
+        }, reject)
       }).then(bool => {
         if (!bool) {
           Vue.set(directory, 'reachable', false)
@@ -172,9 +170,7 @@ new Vue({
               }
             }))
             directory.files += filelist.length
-          }, error => {
-            reject(error)
-          })
+          }, reject)
         })
       }).then(() => {
         db.directories.put({
@@ -185,11 +181,11 @@ new Vue({
           type: directory.type,
           lastupdate: new Date()
         })
-        Vue.delete(directory, 'inprogress')
       }).catch(error => {
         console.error(error)
-        Vue.delete(directory, 'inprogress')
         this.$refs.app.showMsg(error)
+      }).finally(() => {
+        Vue.delete(directory, 'inprogress')
       })
     },
     removeDir (directory) {
@@ -200,39 +196,17 @@ new Vue({
         this.directorylist = this.directorylist.filter(d => {
           return d.id !== directory.id
         })
-        Vue.delete(directory, 'inprogress')
       }).catch(error => {
-        Vue.delete(directory, 'inprogress')
         console.error(error)
         this.$refs.app.showMsg('Error')
+      }).finally(() => {
+        Vue.delete(directory, 'inprogress')
       })
     },
     updateFolder (directory) {
-      // recursive callback return array of FileEntry
-      let iterator = async (dirEntry) => {
-        let entrylist = []
-        let dirReader = dirEntry.createReader()
-        let results = null
-        do {
-          results = await new Promise((resolve, reject) => {
-            dirReader.readEntries(resolve, reject)
-          })
-          for (const entry of results) {
-            if (entry.name.startsWith('.')) { // ignore hidden file or folder
-              continue
-            }
-            if (entry.isFile) {
-              entrylist.push(entry)
-            } else {
-              entrylist = entrylist.concat(await iterator(entry))
-            }
-          }
-        } while (results.length > 0)
-        return entrylist
-      }
       Vue.set(directory, 'inprogress', true)
-      resolveFileEntry(directory.url).then(dirEntry => {
-        return iterator(dirEntry)
+      utils.resolveFileEntry(directory.url).then(dirEntry => {
+        return utils.getLocalFiles(dirEntry)
       }).then(entrylist => {
         return Promise.all(entrylist.filter(entry => {
           return entry.name.match(/(mp3|m4a|flac|wav|mp4)$/i)
@@ -253,7 +227,7 @@ new Vue({
         directory.files = filelist.length
         return db.files.bulkPut(filelist)
       }).then(() => {
-        return db.directories.put({
+        db.directories.put({
           id: directory.id,
           name: directory.name,
           url: directory.url,
@@ -261,10 +235,10 @@ new Vue({
           type: directory.type,
           lastupdate: new Date()
         })
-      }).then(() => {
-        Vue.set(directory, 'inprogress', false)
       }).catch(error => {
         console.error(error)
+        this.$refs.app.showMsg('Error')
+      }).finally(() => {
         Vue.set(directory, 'inprogress', false)
       })
     },
@@ -273,13 +247,8 @@ new Vue({
         return
       }
       this.manual = true
-      if (audioPlayer) {
-        audioPlayer.stop()
-        audioPlayer.release()
-      }
       this.currentFile = file
       this.msgbus.$emit('position', file)
-      audioPlayer = null
       this.load(file).then(url => {
         console.log(url)
         if (this.currentFile.id === file.id) {
@@ -293,13 +262,8 @@ new Vue({
     },
     playLocalFile (file) {
       this.manual = true
-      if (audioPlayer) {
-        audioPlayer.stop()
-        audioPlayer.release()
-      }
       this.currentFile = file
       this.msgbus.$emit('position', file)
-      audioPlayer = null
       this.play(file.url)
       this.msgbus.$emit('preload')
     },
@@ -307,17 +271,18 @@ new Vue({
       if (promiseStore[file.id]) {
         return promiseStore[file.id]
       }
-      let promise = resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+      let promise = utils.resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
         if (url) {
           delete promiseStore[file.id]
           return Promise.resolve(url)
         }
         return new Promise((resolve, reject) => {
           window.cifs.download(file.url, (res) => {
-            if (res.status === 'downloading' && this.currentFile.id === file.id) {
-              this.msgbus.$emit('status', `Buffering(${res.percent})...`)
+            if (res.status === 'downloading') {
+              Vue.set(file, 'percent', res.percent)
             }
             if (res.status === 'finished') {
+              Vue.delete(file, 'percent')
               console.log('finished', res.filename)
               resolve(res.filename)
             }
@@ -325,24 +290,25 @@ new Vue({
         }).then(filename => {
           console.log('move', filename)
           return (async () => {
-            let dirEntry = await resolveFileEntry(window.cordova.file.dataDirectory)
-            let fileEntry = await resolveFileEntry(window.cordova.file.cacheDirectory + filename)
-            return moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
+            let dirEntry = await utils.resolveFileEntry(window.cordova.file.dataDirectory)
+            let fileEntry = await utils.resolveFileEntry(window.cordova.file.cacheDirectory + filename)
+            return utils.moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
           })()
         }).then((fileEntry) => {
           Vue.set(file, 'save', true)
-          console.log('fetch url', fileEntry)
-          delete promiseStore[file.id]
           return Promise.resolve(fileEntry.toURL())
         })
-      }).catch(error => {
-        console.error(error)
+      }).catch(console.error).finally(() => {
         delete promiseStore[file.id]
       })
       promiseStore[file.id] = promise
       return promise
     },
     play (url) {
+      if (audioPlayer) {
+        audioPlayer.stop()
+        audioPlayer.release()
+      }
       audioPlayer = new window.Media(url, () => {
         this.msgbus.$emit('toggleplay', false)
         if (this.manual) {
@@ -414,18 +380,19 @@ new Vue({
         case window.Media.MEDIA_RUNNING:
           console.log('running')
           this.msgbus.$emit('toggleplay', true)
+          let duration = audioPlayer.getDuration()
+          if (duration < 0) {
+            return
+          }
+          let formattedDuration = utils.formatTime(duration)
           mediaTimer = setInterval(() => {
             audioPlayer.getCurrentPosition(position => {
-              let duration = audioPlayer.getDuration()
-              if (duration < 0) {
-                return
-              }
               let percent = position / duration
               if (percent < 0) {
                 return
               }
               this.msgbus.$emit('progress', `scaleX(${percent})`)
-              this.msgbus.$emit('status', formatTime(position) + '/' + formatTime(duration))
+              this.msgbus.$emit('status', utils.formatTime(position) + '/' + formattedDuration)
             }, error => {
               console.error(error)
               this.$refs.app.showMsg('Position Error')
@@ -449,7 +416,7 @@ new Vue({
     },
     checkCache () {
       this.filelist.forEach(file => {
-        resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+        utils.resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
           if (url) {
             Vue.set(file, 'save', true)
           } else {
@@ -476,7 +443,7 @@ new Vue({
           console.log('cache cleared')
         }).catch(console.error)
       }
-      resolveFileEntry(window.cordova.file.dataDirectory).then((dirEntry) => {
+      utils.resolveFileEntry(window.cordova.file.dataDirectory).then((dirEntry) => {
         let dirReader = dirEntry.createReader()
         let readEntries = () => {
           dirReader.readEntries((results) => {
@@ -495,7 +462,7 @@ new Vue({
               }))
               readEntries()
             }
-          }, error => console.error(error))
+          }, console.error)
         }
         readEntries()
       })
@@ -517,7 +484,7 @@ new Vue({
             this.checkCache()
           })
         }
-        resolveFileEntry(window.cordova.file.dataDirectory).then(dirEntry => {
+        utils.resolveFileEntry(window.cordova.file.dataDirectory).then(dirEntry => {
           let dirReader = dirEntry.createReader()
           let readEntries = () => {
             dirReader.readEntries((results) => {
@@ -529,7 +496,7 @@ new Vue({
                 }).map(entry => parseInt(entry.name.split('_')[1])))
                 readEntries()
               }
-            }, error => console.error(error))
+            }, console.error)
           }
           readEntries()
         })

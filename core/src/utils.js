@@ -116,6 +116,32 @@ function resolveURL (dirUrl, fileName) {
   })
 }
 
+/**
+ * recursive callback return array of FileEntry
+ * @param {*} dirEntry
+ */
+async function getLocalFiles (dirEntry) {
+  let entrylist = []
+  let dirReader = dirEntry.createReader()
+  let results = null
+  do {
+    results = await new Promise((resolve, reject) => {
+      dirReader.readEntries(resolve, reject)
+    })
+    for (const entry of results) {
+      if (entry.name.startsWith('.')) { // ignore hidden file or folder
+        continue
+      }
+      if (entry.isFile) {
+        entrylist.push(entry)
+      } else {
+        entrylist = entrylist.concat(await getLocalFiles(entry))
+      }
+    }
+  } while (results.length > 0)
+  return entrylist
+}
+
 export {
-  formatTime, formatSize, resolveFileEntry, moveFileEntry, resolveURL
+  formatTime, formatSize, resolveFileEntry, moveFileEntry, resolveURL, getLocalFiles
 }

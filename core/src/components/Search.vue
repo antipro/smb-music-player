@@ -47,6 +47,11 @@
         </span>
         <span
           class="mdc-list-item__meta"
+          v-if="file.type === 2 && file.percent">
+          {{ file.percent }}
+        </span>
+        <span
+          class="mdc-list-item__meta"
           v-if="file.type === 1">
           <i class="material-icons" aria-hidden="true">phone_android</i>
         </span>
