@@ -309,7 +309,7 @@ new Vue({
         audioPlayer.stop()
         audioPlayer.release()
       }
-      audioPlayer = new window.Media(url, () => {
+      audioPlayer = new Media(url, () => {
         this.msgbus.$emit('toggleplay', false)
         if (this.manual) {
           console.log('manual end')
@@ -373,11 +373,11 @@ new Vue({
     changeStatus (mediaStatus) {
       this.mediaStatus = mediaStatus
       switch (mediaStatus) {
-        case window.Media.MEDIA_STARTING:
+        case Media.MEDIA_STARTING:
           console.log('starting')
           this.manual = false
           break
-        case window.Media.MEDIA_RUNNING:
+        case Media.MEDIA_RUNNING:
           console.log('running')
           this.msgbus.$emit('toggleplay', true)
           let duration = audioPlayer.getDuration()
@@ -399,11 +399,11 @@ new Vue({
             })
           }, 1000)
           break
-        case window.Media.MEDIA_PAUSED:
+        case Media.MEDIA_PAUSED:
           console.log('paused')
           this.msgbus.$emit('toggleplay', false)
           break
-        case window.Media.MEDIA_STOPPED:
+        case Media.MEDIA_STOPPED:
           clearInterval(mediaTimer)
           this.msgbus.$emit('progress', `scaleX(0)`)
           this.msgbus.$emit('status', '')
