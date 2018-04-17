@@ -30,7 +30,7 @@ new Vue({
   template: '<App ref="app"/>',
   data: {
     directorylist: [],
-    currentFile: null,
+    currentFile: {},
     msgbus: new Vue(),
     filelist: [],
     mediaStatus: null,
@@ -248,7 +248,6 @@ new Vue({
       }
       this.manual = true
       this.currentFile = file
-      this.msgbus.$emit('position', file)
       this.load(file).then(url => {
         console.log(url)
         if (this.currentFile.id === file.id) {
@@ -263,7 +262,6 @@ new Vue({
     playLocalFile (file) {
       this.manual = true
       this.currentFile = file
-      this.msgbus.$emit('position', file)
       this.play(file.url)
       this.msgbus.$emit('preload')
     },
@@ -380,19 +378,18 @@ new Vue({
         case Media.MEDIA_RUNNING:
           console.log('running')
           this.msgbus.$emit('toggleplay', true)
-          let duration = audioPlayer.getDuration()
-          if (duration < 0) {
-            return
-          }
-          let formattedDuration = utils.formatTime(duration)
           mediaTimer = setInterval(() => {
             audioPlayer.getCurrentPosition(position => {
+              let duration = audioPlayer.getDuration()
+              if (duration < 0) {
+                return
+              }
               let percent = position / duration
               if (percent < 0) {
                 return
               }
               this.msgbus.$emit('progress', `scaleX(${percent})`)
-              this.msgbus.$emit('status', utils.formatTime(position) + '/' + formattedDuration)
+              this.msgbus.$emit('status', utils.formatTime(position) + '/' + utils.formatTime(duration))
             }, error => {
               console.error(error)
               this.$refs.app.showMsg('Position Error')

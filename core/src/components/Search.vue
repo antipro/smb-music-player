@@ -27,11 +27,11 @@
         data-mdc-auto-init="MDCRipple"
         v-for="file in filelist"
         :key="file.id"
-        :class="{ 'mdc-list-item--selected': selectedId === file.id }"
+        :class="{ 'mdc-list-item--selected': $root.currentFile.id === file.id }"
         @click="select(file)"
         tabindex="0">
         <span class="mdc-list-item__graphic" role="presentation">
-          <i v-if="selectedId === file.id" class="material-icons" aria-hidden="true">play_circle_outline</i>
+          <i v-if="$root.currentFile.id === file.id" class="material-icons" aria-hidden="true">play_circle_outline</i>
           <i v-else class="material-icons" aria-hidden="true">audiotrack</i>
         </span>
         <span class="mdc-list-item__text">
@@ -93,19 +93,15 @@ export default {
   data () {
     return {
       msgbus: null,
-      focused: false,
-      selectedId: 0
+      focused: false
     }
   },
   created () {
     this.msgbus = this.$root.msgbus
-    this.msgbus.$off([ 'position', 'next', 'previous', 'preload', 'reset', 'random' ])
-    this.msgbus.$on('position', file => {
-      this.selectedId = file.id
-    })
+    this.msgbus.$off([ 'next', 'previous', 'preload', 'reset', 'random' ])
     this.msgbus.$on('next', () => {
       let idx = this.filelist.findIndex(file => {
-        return file.id === this.selectedId
+        return file.id === this.$root.currentFile.id
       })
       if (idx === undefined) {
         return
@@ -132,7 +128,7 @@ export default {
     })
     this.msgbus.$on('previous', () => {
       let idx = this.filelist.findIndex(file => {
-        return file.id === this.selectedId
+        return file.id === this.$root.currentFile.id
       })
       if (idx === undefined) {
         return
@@ -149,7 +145,7 @@ export default {
     })
     this.msgbus.$on('preload', () => {
       let idx = this.filelist.findIndex(file => {
-        return file.id === this.selectedId
+        return file.id === this.$root.currentFile.id
       })
       if (idx === undefined) {
         return
@@ -170,9 +166,6 @@ export default {
         this.$root.phrase = bak
       }, 500)
     })
-    if (this.$root.currentFile) {
-      this.selectedId = this.$root.currentFile.id
-    }
   },
   methods: {
     formatSize: formatSize,
