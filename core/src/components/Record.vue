@@ -215,9 +215,7 @@ export default {
           waveTimer = setInterval(() => {
             audioRecorder.getCurrentAmplitude(amp => {
               this.showWave(amp)
-            }, error => {
-              console.log('Error getting amp=' + error)
-            })
+            }, console.error)
           }, 100)
           break
         case window.Media.MEDIA_PAUSED:
