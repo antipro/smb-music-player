@@ -110,7 +110,7 @@ export default {
         audioRecorder.stopRecord()
         audioRecorder.release()
       }
-      audioRecorder = new window.Media(window.cordova.file.cacheDirectory + 'speech.amr', () => {
+      audioRecorder = new window.Media(cordova.file.cacheDirectory + 'speech.amr', () => {
         console.log('record done')
         if (this.$root.mediaStatus === window.Media.MEDIA_PAUSED && this.needResume) {
           this.$root.resume()
@@ -135,7 +135,7 @@ export default {
     },
     processFile () {
       this.parsing = true
-      resolveFileEntry(window.cordova.file.cacheDirectory + 'speech.amr').then(fileEntry => { // get file
+      resolveFileEntry(cordova.file.cacheDirectory + 'speech.amr').then(fileEntry => { // get file
         return new Promise((resolve, reject) => {
           fileEntry.file(resolve, reject)
         })

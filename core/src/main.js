@@ -6,7 +6,7 @@ import Vue from 'vue'
 import VuePersist from 'vue-persist'
 import App from './App'
 import router from './router'
-import utils from './utils'
+import * as utils from './utils'
 
 Vue.use(VuePersist, {
   name: 'persist:smbmusic'
@@ -48,7 +48,7 @@ new Vue({
     document.addEventListener('deviceready', () => {
       window.StatusBar.backgroundColorByHexString('#ff6659')
       this.checkOnline()
-      window.cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
+      cordova.plugins.WifiManager.onnetworkstatechanged = (data) => {
         if (data.BSSID !== null && data.networkInfo.state === 'CONNECTED' && data.wifiInfo !== null) {
           // console.log(data)
           // alert('connected ' + data.networkInfo.type)
@@ -67,13 +67,13 @@ new Vue({
         }
       }
     }, false)
-    if (!window.cordova) {
+    if (!cordova) {
       this.refreshAll(true)
     }
   },
   methods: {
     checkOnline () {
-      window.cordova.plugins.WifiManager.getConnectionInfo((err, wifiInfo) => {
+      cordova.plugins.WifiManager.getConnectionInfo((err, wifiInfo) => {
         if (err) {
           console.error(err)
           return
@@ -271,7 +271,7 @@ new Vue({
       if (promiseStore[file.id]) {
         return promiseStore[file.id]
       }
-      let promise = utils.resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+      let promise = utils.resolveURL(cordova.file.dataDirectory, 'file_' + file.id).then(url => {
         if (url) {
           delete promiseStore[file.id]
           return Promise.resolve(url)
@@ -290,8 +290,8 @@ new Vue({
         }).then(filename => {
           console.log('move', filename)
           return (async () => {
-            let dirEntry = await utils.resolveFileEntry(window.cordova.file.dataDirectory)
-            let fileEntry = await utils.resolveFileEntry(window.cordova.file.cacheDirectory + filename)
+            let dirEntry = await utils.resolveFileEntry(cordova.file.dataDirectory)
+            let fileEntry = await utils.resolveFileEntry(cordova.file.cacheDirectory + filename)
             return utils.moveFileEntry(fileEntry, dirEntry, 'file_' + file.id)
           })()
         }).then((fileEntry) => {
@@ -416,7 +416,7 @@ new Vue({
     },
     checkCache () {
       this.filelist.forEach(file => {
-        utils.resolveURL(window.cordova.file.dataDirectory, 'file_' + file.id).then(url => {
+        utils.resolveURL(cordova.file.dataDirectory, 'file_' + file.id).then(url => {
           if (url) {
             Vue.set(file, 'save', true)
           } else {
@@ -443,7 +443,7 @@ new Vue({
           console.log('cache cleared')
         }).catch(console.error)
       }
-      utils.resolveFileEntry(window.cordova.file.dataDirectory).then((dirEntry) => {
+      utils.resolveFileEntry(cordova.file.dataDirectory).then((dirEntry) => {
         let dirReader = dirEntry.createReader()
         let readEntries = () => {
           dirReader.readEntries((results) => {
@@ -484,7 +484,7 @@ new Vue({
             this.checkCache()
           })
         }
-        utils.resolveFileEntry(window.cordova.file.dataDirectory).then(dirEntry => {
+        utils.resolveFileEntry(cordova.file.dataDirectory).then(dirEntry => {
           let dirReader = dirEntry.createReader()
           let readEntries = () => {
             dirReader.readEntries((results) => {

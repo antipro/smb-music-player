@@ -62,6 +62,7 @@
 
 <script>
 import { db } from '../database'
+import { resolveFileEntry } from '../utils'
 import Confirm from '@/components/Confirm'
 import Prompt from '@/components/Prompt'
 
@@ -81,22 +82,23 @@ export default {
   },
   created () {
     this.$parent.title = 'Local Folder'
-    if (window.cordova) {
-      window.resolveLocalFileSystemURL(window.cordova.file.externalRootDirectory, (dirEntry) => {
-        let dirReader = dirEntry.createReader()
-        let readEntries = () => {
-          dirReader.readEntries((results) => {
-            if (results.length) {
-              this.folderlist = this.folderlist.concat(results.filter(entry => entry.isDirectory))
-              readEntries()
-            } else {
-              this.currentUrl = window.cordova.file.externalRootDirectory
-            }
-          }, error => console.error(error))
-        }
-        readEntries()
-      })
+    if (!cordova) {
+      return
     }
+    resolveFileEntry(cordova.file.externalRootDirectory).then(dirEntry => {
+      let dirReader = dirEntry.createReader()
+      let readEntries = () => {
+        dirReader.readEntries((results) => {
+          if (results.length) {
+            this.folderlist = this.folderlist.concat(results.filter(entry => entry.isDirectory))
+            readEntries()
+          } else {
+            this.currentUrl = cordova.file.externalRootDirectory
+          }
+        }, error => console.error(error))
+      }
+      readEntries()
+    }).catch(console.error)
   },
   mounted () {
     document.addEventListener('backbutton', this.confirm, false)
