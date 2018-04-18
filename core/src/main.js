@@ -31,6 +31,7 @@ new Vue({
   data: {
     directorylist: [],
     currentFile: {},
+    nextFile: {},
     msgbus: new Vue(),
     filelist: [],
     mediaStatus: null,
@@ -247,10 +248,11 @@ new Vue({
         return
       }
       this.manual = true
-      this.currentFile = file
+      this.nextFile = file
       this.load(file).then(url => {
         console.log(url)
-        if (this.currentFile.id === file.id) {
+        if (this.nextFile.id === file.id) {
+          this.currentFile = file
           this.play(url)
           this.msgbus.$emit('preload')
         }
@@ -261,6 +263,7 @@ new Vue({
     },
     playLocalFile (file) {
       this.manual = true
+      this.nextFile = file
       this.currentFile = file
       this.play(file.url)
       this.msgbus.$emit('preload')
