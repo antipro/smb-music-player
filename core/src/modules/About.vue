@@ -8,6 +8,7 @@
     <p>This is a simple music player, It is used to listen music from nas/computer in your home/office.
       It will index all of your music files, so they can be searched instantly.
       Only file name can be indexed for now, but I will try to index tag info later.
+      Fortunately there are many tools for renaming files according to tag info.
       If you have any question, please let me know.
       According to Google's policy, you can refund in 24 hours after purchase.</p>
     <p>Regards</p>
